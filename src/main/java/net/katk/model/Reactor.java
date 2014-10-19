@@ -1,0 +1,46 @@
+package net.katk.model;
+
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import javax.xml.bind.annotation.XmlElement;
+
+import net.katk.adapter.Reaction;
+import net.katk.compute.Token;
+
+/**
+ * 
+ * Reasoning is done by class  
+ *
+ */
+@Entity
+public abstract class Reactor extends Common
+{
+	@XmlElement
+	@Lob
+	@Column(name="name")
+	private String _name = null;
+
+	@SuppressWarnings("javadoc")
+	public String getName() { return _name; }
+
+	public abstract Reaction add(
+			final Token token, final Example example,
+			final List<Param> params,
+			final Atom atom, final String result, final String evaluation, 
+			final long date, final String note);
+
+	public abstract Reaction addTerminal(final Token token, final Example example);
+
+	public abstract Reaction next(final Token token, final Example example);
+	
+	public abstract Reaction back(final Token token, final Example example);
+
+	public abstract Reaction insert(final Token token, final Example example, final Step stepA, final Step stepB);
+
+	public abstract Reaction delete(final Token token, final Example example, final Step step);
+
+	public abstract Reaction replace(final Token token, final Example example, final Step step, final Atom atom, final String result, final String evaluation);
+}

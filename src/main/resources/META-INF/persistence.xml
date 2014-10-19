@@ -1,0 +1,31 @@
+<?xml version="1.0"  encoding="UTF-8"?>
+<persistence
+	xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	version="1.0"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+	http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+>
+	<persistence-unit name="AtomHubDataBase" transaction-type="RESOURCE_LOCAL">
+		<provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+		<non-jta-data-source>java:comp/env/jdbc/AtomHubDB</non-jta-data-source>
+		
+		<class>net.katk.model.Atom</class>
+		<class>net.katk.model.Branch</class>
+		<class>net.katk.model.Example</class>
+		<class>net.katk.model.Param</class>
+		<class>net.katk.model.People</class>
+		<class>net.katk.model.Group</class>
+		<class>net.katk.model.Step</class>
+
+	    <properties>
+	        <property name="openjpa.DynamicEnhancementAgent" value="false" />
+	        <property name="openjpa.RuntimeUnenhancedClasses" value="unsupported" /> 
+	        <property name="openjpa.Log" value="commons" />
+	        <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=true" />
+	        
+			<property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema"/>
+	    </properties>
+	</persistence-unit>
+
+</persistence>
