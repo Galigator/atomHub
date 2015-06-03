@@ -9,11 +9,14 @@ import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+
+import net.katk.compute.Token;
 
 /**
  * A people is the abstraction of a physical person.
  */
-@Entity
+@Entity(name="people")
 public class People extends Common
 {
 	@XmlElement
@@ -76,10 +79,9 @@ public class People extends Common
 		_name = name_;
 	}
 
-	@XmlElement
+	@XmlIDREF
 	@OneToMany
 	@OrderColumn(name = "index_bookmarks")
-	@Column(name="bookmarks")
 	// @OrderBy("index")
 	private List<Example> _bookmarks = new ArrayList<Example>();
 
@@ -87,5 +89,13 @@ public class People extends Common
 	public List<Example> getBookmarks()
 	{
 		return _bookmarks;
+	}
+	
+	public People(){}
+	public People(final Token token, final String name, final String mail)
+	{
+		setMail(mail);
+		setName(name);
+		token._em.persist(this);
 	}
 }

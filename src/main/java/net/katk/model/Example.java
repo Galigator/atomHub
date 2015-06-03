@@ -3,13 +3,16 @@ package net.katk.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 
 import net.katk.compute.Token;
 import net.katk.model.reactors.DistReactor;
@@ -20,11 +23,11 @@ import net.katk.model.reactors.tree.TreeReactor;
 /**
  * An example is a model of realization in the job world.
  */
-@Entity
+@Entity(name="example")
 public class Example extends Common
 {
-	@XmlElement
-	@ManyToOne
+	@XmlIDREF
+	@ManyToOne(cascade=CascadeType.PERSIST,fetch=FetchType.LAZY)
 	@Column(name="origine")
 	private Atom _origine = null;
 
@@ -33,10 +36,9 @@ public class Example extends Common
 		return _origine;
 	}
 
-	@XmlElement
+	@XmlIDREF
 	@OneToMany
 	@OrderColumn(name = "index")
-	@Column(name="path")
 	// @OrderBy("index")
 	private List<Step> _path = new ArrayList<Step>();
 
@@ -119,10 +121,10 @@ public class Example extends Common
 		token._em.merge(this);
 	}
 	
-	@XmlElement
+	// @XmlElement // We don't want the user to know this.
 	@OneToMany
 	@OrderColumn(name = "index_reactor")
-	@Column(name="reactors")
+	@XmlIDREF
 	private List<Reactor> _reactors = new ArrayList<Reactor>(2);
 
 	public List<Reactor> getReactors()
@@ -137,13 +139,19 @@ public class Example extends Common
 		assert atom != null;
 		_origine = atom;
 
-		setGroup(token.getGroup()); // TODO set the Group.
+		setGroup(token.getGroup()); // TODO set the Party.
 	
 		_reactors.add(new TreeReactor(token,atom));
 		_reactors.add(new DistReactor(token,atom));
 		_reactors.add(new StatReactor(token,atom));
 		_reactors.add(new PlanReactor(token,atom));
 
+		token._em.persist(this);
+	}
+	
+	public void addStep(final Token token, final Step step)
+	{
+		getPath().add(step);
 		token._em.persist(this);
 	}
 }

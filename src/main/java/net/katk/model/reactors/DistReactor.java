@@ -2,8 +2,10 @@ package net.katk.model.reactors;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlElement;
 
@@ -15,7 +17,7 @@ import net.katk.model.Param;
 import net.katk.model.Reactor;
 import net.katk.model.Step;
 
-@Entity
+@Entity(name="distreactor")
 public class DistReactor extends Reactor
 {
 	@XmlElement
@@ -49,7 +51,7 @@ public class DistReactor extends Reactor
 	}
 	
 	@XmlElement
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.PERSIST,fetch=FetchType.LAZY)
 	@Column(name="atom")
 	private Atom _atom = null;
 
@@ -101,7 +103,7 @@ public class DistReactor extends Reactor
 	}
 
 	@Override
-	public Reaction delete(final Token token, final Example example, final Step step)
+	public Reaction remove(final Token token, final Example example, final Step step)
 	{
 		// TODO Auto-generated method stub
 		return null;

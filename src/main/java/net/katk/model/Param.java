@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 /**
  * A param is a association name-value of use by one or many step.
  */
-@Entity
+@Entity(name="param")
 public class Param extends Common
 {
 	@XmlElement

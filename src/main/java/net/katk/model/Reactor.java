@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.xml.bind.annotation.XmlElement;
 
@@ -12,10 +14,11 @@ import net.katk.compute.Token;
 
 /**
  * 
- * Reasoning is done by class  
+ * Reasoning is done by class
  *
  */
 @Entity
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 public abstract class Reactor extends Common
 {
 	@XmlElement
@@ -40,7 +43,7 @@ public abstract class Reactor extends Common
 
 	public abstract Reaction insert(final Token token, final Example example, final Step stepA, final Step stepB);
 
-	public abstract Reaction delete(final Token token, final Example example, final Step step);
+	public abstract Reaction remove(final Token token, final Example example, final Step step);
 
 	public abstract Reaction replace(final Token token, final Example example, final Step step, final Atom atom, final String result, final String evaluation);
 }

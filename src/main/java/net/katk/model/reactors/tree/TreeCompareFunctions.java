@@ -7,7 +7,7 @@ import java.util.List;
 import net.katk.model.Atom;
 import net.katk.model.Common;
 import net.katk.model.Example;
-import net.katk.model.Group;
+import net.katk.model.Party;
 import net.katk.model.Param;
 import net.katk.model.Step;
 import net.katk.tools.Difference;
@@ -92,7 +92,7 @@ public class TreeCompareFunctions
 		return max;
 	}
 	
-	private static Difference compare(final Group alpha, final Group beta)
+	private static Difference compare(final Party alpha, final Party beta)
 	{
 		
 		if (alpha.getId() == beta.getId())
@@ -141,10 +141,10 @@ public class TreeCompareFunctions
 		return 1.0;
 	}
 	
-	private static <T extends Common> T exist(final List<T> commons, final int id)
+	private static <T extends Common> T exist(final List<T> commons, final String id)
 	{
 		for(final T common : commons)
-			if (common.getId() == id)
+			if (common.getId().equals(id))
 				return common;
 		return null;
 	}

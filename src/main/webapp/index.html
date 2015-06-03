@@ -1,4 +1,110 @@
-<html>
-<head></head>
-<body>coucou</body>
+<!DOCTYPE html>
+<html> <!--  http://localhost:8080/atomHub/  -->
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="FF=24,IE=9" />
+	<meta http-equiv="expires" content="Fri, 11 Oct 2013 11:30:00 GMT" />
+	<title>AtomHub test page.</title>
+	
+	<link   type="image/png" href="icons/atom/atome-icone-9016-16.png" rel="icon"       />
+	<link   type="text/css"  href="css/default.css"                    rel="Stylesheet" />
+	<link   type="text/css"  href="lib/bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="Stylesheet" />
+	<link   type="text/css"  href="lib/bootstrap-3.2.0-dist/css/bootstrap-theme.min.css" rel="Stylesheet" />
+	
+	<script type="text/javascript" src="lib/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="lib/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+	
+	<script type="text/javascript" src="js/cxf-utils.js"></script>
+	<script type="text/javascript" src="js/AtomServicesService.js"></script>
+	<script type="text/javascript" src="js/ExampleServicesService.js"></script>
+	<script type="text/javascript" src="js/StepServicesService.js"></script>
+	<script type="text/javascript" src="js/PeopleServicesService.js"></script>
+	<script type="text/javascript" src="js/Atom.js"></script>
+	<script type="text/javascript" src="js/Example.js"></script>
+	<script type="text/javascript" src="js/Step.js"></script>
+	<script type="text/javascript" src="js/People.js"></script>
+
+</head>
+<body>
+
+	<div id="root"></div>
+
+	<div class="templates">
+		<div class="editorControl row">
+			<button class="btn btn-lg btn-success save" >Save</button>
+			<div class="SaveTimer"></div>
+			<button class="btn btn-lg btn-primary reset">Reset changes</button>
+			<button class="btn btn-lg btn-danger previous">Previous version</button>
+		</div>
+	
+		<div class="atom" id="">
+			<div class="model">
+				<div class="head row">
+					<div class="col-md-4">name<div class="name" contenteditable="true" ></div></div>
+					<div class="col-md-4">verbe<div class="verbe" contenteditable="true" ></div></div>
+					<div class="col-md-4">object<div class="object" contenteditable="true" ></div></div>
+				</div>
+				<div class="core">
+					<div>abstract<div class="abstract" contenteditable="true" ></div></div>
+					<div>description<div class="description" contenteditable="true" ></div></div>
+				</div>
+				<div class="meta row">
+					<div class="col-md-4">level<div class="level"></div></div>
+					<div class="col-md-4">directory<div class="directory" contenteditable="true" ></div></div>
+					<div class="col-md-4">version<div class="version"></div></div>
+				</div>
+			</div>
+			<div class="interaction  row">
+				<div class="col-md-4">eventQueue<div class="eventQueue" contenteditable="true" ></div></div>
+				<div class="col-md-4">examples<div class="examples"></div></div>
+				<div class="col-md-4">results<div class="results"></div></div>
+			</div>
+		</div>
+		
+		<div class="step" id="">
+			<div class="author"></div>
+			<div class="core"></div>
+			<div class="evalDate"></div>
+			<div class="evaluation" contenteditable="true" ></div>
+			<div class="note" contenteditable="true"></div>
+			<div class="params"></div>
+			<div class="result"></div>
+		</div>
+		
+		<div class="example" id="">
+			<div class="externalResources">
+				<div class="externalResourceId"></div>
+				<div class="externalResourceType"></div>
+			</div>
+			<div class="usability">
+				<div class="nominal"></div>
+				<div class="obselete"></div>
+				<div class="origine"></div>
+			</div>
+			<div class="path"></div>
+			<div class="env">
+				<div class="reactors"></div>
+				<div class="state"></div>
+				<div class="origine"></div>
+			</div>
+			<div class="nextsAtoms">
+			</div>
+			<div class="nextsRelations">
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/javascript">
+		var peopleServices = new PeopleServices();
+		var atomServices = new AtomServices();
+		var stepServices = new StepServices();
+		var exampleServices = new ExampleServices();
+		
+		exampleServices.init("351");
+		stepServices.init("351");
+		peopleServices.init("351");
+		atomServices.init("351");
+		atomServices.startByName("coucou");
+	</script>
+</body>
 </html>

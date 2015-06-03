@@ -3,11 +3,12 @@ package net.katk;
 import javax.xml.ws.Endpoint;
 
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
+import org.eclipse.jetty.server.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Standalone web server for the orchestrator.
+ * Standalone web server for the atom orchestrator.
  */
 public class Runner
 {
@@ -26,7 +27,7 @@ public class Runner
 	 * @param args for special options
 	 * @throws InterruptedException raise when something goes wrong
 	 */
-	public static void main(final String[] args) throws InterruptedException
+	public static void mainCxf(final String[] args) throws InterruptedException
 	{
 		System.setProperty("org.slf4j.simplelogger.defaultlog", "FINE");
 		
@@ -63,5 +64,27 @@ public class Runner
 		_logger.info("Server exiting");
 		System.exit(0);
 		//http://fusesource.com/docs/framework/2.3/bind_trans/SoapOverJms-PublishWithJava.html
+	}
+	
+	/*
+	public static void mainJetty(final String[] args) throws Exception
+	{
+        final Server server = new Server(8080);
+        server.start();
+        server.join();
+	}
+	*/
+	
+	public static void main(final String[] args)
+	{
+		try
+		{
+			mainCxf(args);
+			// mainJetty(args);
+		}
+		catch(final Exception e)
+		{
+			_logger.error("", e);
+		}
 	}
 }

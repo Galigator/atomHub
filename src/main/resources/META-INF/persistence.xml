@@ -9,22 +9,33 @@
 	<persistence-unit name="AtomHubDataBase" transaction-type="RESOURCE_LOCAL">
 		<provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
 		<non-jta-data-source>java:comp/env/jdbc/AtomHubDB</non-jta-data-source>
-		
+
 		<class>net.katk.model.Atom</class>
 		<class>net.katk.model.Branch</class>
+		<class>net.katk.model.Common</class>
 		<class>net.katk.model.Example</class>
+		<class>net.katk.model.Party</class>
 		<class>net.katk.model.Param</class>
 		<class>net.katk.model.People</class>
-		<class>net.katk.model.Group</class>
+		<class>net.katk.model.Reactor</class>
 		<class>net.katk.model.Step</class>
-
+		<class>net.katk.model.reactors.DistReactor</class>
+		<class>net.katk.model.reactors.PlanReactor</class>
+		<class>net.katk.model.reactors.StatReactor</class>
+		<class>net.katk.model.reactors.tree.TreeReactor</class>
+		
 	    <properties>
+	    	<!--  <property name="openjpa.MetaDataRepository" value="Preload=true"/>  -->
+	    	
 	        <property name="openjpa.DynamicEnhancementAgent" value="false" />
 	        <property name="openjpa.RuntimeUnenhancedClasses" value="unsupported" /> 
 	        <property name="openjpa.Log" value="commons" />
 	        <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=true" />
 	        
 			<property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema"/>
+			
+			<!-- <property name="openjpa.MetaDataFactory" value="cascade.CascadeMappingFactory(cascade='persist,merge')"/>  -->
+			<!-- <property name="openjpa.MetaDataFactory" value="cascade.CascadeMappingFactory(cascade='persist')"/> -->
 	    </properties>
 	</persistence-unit>
 

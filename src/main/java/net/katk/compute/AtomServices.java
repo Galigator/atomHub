@@ -3,8 +3,10 @@ package net.katk.compute;
 import static net.katk.tools.StackTraceInfo.getCurrentMethodName;
 
 import java.util.List;
+import java.util.Optional;
 
 import net.katk.adapter.IAtom;
+import net.katk.adapter.Problem;
 import net.katk.model.Atom;
 import net.katk.model.Example;
 import net.katk.model.Atom.Field;
@@ -16,139 +18,202 @@ public class AtomServices extends Token implements IAtom
 {
 	private transient static final Logger _logger = LoggerFactory.getLogger(Atom.class.getName());
 	
-	public Atom getAtom(final String token, final int id)
+	public Atom getAtom(final String token, final String id) throws Problem
 	{
 		_logger.info(getCurrentMethodName());
 		if (!open(token)) return null;
-		final Atom out = (token == null)? null : getAtom(id);
-		close();
-		return out;
+		try
+		{
+			return getAtom(id).orElse(null);
+		}
+		finally
+		{
+			close();
+		}
 	}
 	
-	public List<Atom> getAtoms(final String token, final List<Integer> ids)
+	public List<Atom> getAtoms(final String token, final List<String> ids) throws Problem
 	{
 		_logger.info(getCurrentMethodName());
 		if (!open(token)) return null;
-		final List<Atom> out = (token == null)? null : getAtoms(ids);
-		close();
-		return out;
+		try
+		{
+			return getAtoms(ids);
+		}
+		finally
+		{
+			close();
+		}
 	}
 	
 	
-	private int save(final String token, final int id, final Field field, final Object value)
+	private String save(final String token, final String id, final Field field, final Object value) throws Problem
 	{
-		if (!open(token)) return 0;
-		final Atom atom = getAtom(id);
-		final int out =
-				(atom != null?
-					atom.update(this, field, value):
-					new Atom(this, field, value)).getId();
-		close();
-		return out;
+		if (!open(token)) return null;
+		try
+		{
+			final Optional<Atom> atomOption = getAtom(id);
+			
+			if (atomOption.isPresent())
+				return atomOption.get().update(this, field, value).getId();
+			else
+				return new Atom(this, field, value).getId();
+		}
+		finally
+		{
+			close();
+		}
 	}
 	
-	public int saveName(final String token, final int id, final String value)
+	@Override
+	public String save(final String token, final String id, final String name,
+			final String description, final String resume, final String verbe, final String object,
+			final String branchId, final String directory, final String eventQueue,
+			final String recetteId) throws Problem
+	{
+		if (!open(token)) return null;
+		try
+		{
+			final Optional<Atom> atomOption = getAtom(id);
+			
+			if (atomOption.isPresent())
+				return atomOption.get().update(this, name, description, resume, verbe, object,	branchId, directory, eventQueue, recetteId).getId();
+			else
+				return new Atom(this, name, description, resume, verbe, object,	branchId, directory, eventQueue, recetteId).getId();
+		}
+		finally
+		{
+			close();
+		}
+	}
+	
+	public String saveName(final String token, final String id, final String value) throws Problem
 	{
 		return save(token, id, Field.Name, value);
 	}
 	
-	public int saveDescription(final String token, final int id, final String value)
+	public String saveDescription(final String token, final String id, final String value) throws Problem
 	{
 		return save(token, id, Field.Description, value);
 	}
 	
-	public int saveAbstract(final String token, final int id, final String value)
+	public String saveAbstract(final String token, final String id, final String value) throws Problem
 	{
 		return save(token, id, Field.Abstract, value);
 	}
 	
-	public int saveVerbe(final String token, final int id, final String value)
+	public String saveVerbe(final String token, final String id, final String value) throws Problem
 	{
 		return save(token, id, Field.Verbe, value);
 	}
 	
-	public int saveObject(final String token, final int id, final String value)
+	public String saveObject(final String token, final String id, final String value) throws Problem
 	{
 		return save(token, id, Field.Object, value);
 	}
 
-	public int saveBranch(final String token, final int id, final int value)
+	public String saveBranch(final String token, final String id, final String value) throws Problem
 	{
 		return save(token, id, Field.Branch, value);
 	}
 	
-	public int saveDirectory(final String token, final int id, final String value)
+	public String saveDirectory(final String token, final String id, final String value) throws Problem
 	{
 		return save(token, id, Field.Directory, value);
 	}
 
-	public int saveEventQueue(final String token, final int id, final String value)
+	public String saveEventQueue(final String token, final String id, final String value) throws Problem
 	{
 		return save(token, id, Field.EventQueue, value);
 	}
 	
-	public int saveRecette(final String token, final int id, final int value)
+	public String saveRecette(final String token, final String id, final String value) throws Problem
 	{
 		return save(token, id, Field.Recette, value);
 	}
 	
-	public void removeExample(final String token, final int atomId, final int exampleId)
+	public void removeExample(final String token, final String atomId, final String exampleId) throws Problem
 	{
 		if (!open(token)) return;
-		final Atom atom = getAtom(atomId);
-		if (atom != null)
-			atom.removeExample(this, exampleId);
-		close();
+		try
+		{
+			getAtom(atomId).ifPresent(atom -> atom.removeExample(this, exampleId));
+		}
+		finally
+		{
+			close();
+		}
 	}
 
-	public void addExample(final String token, final int atomId, final int exampleId)
+	public void addExample(final String token, final String atomId, final String exampleId) throws Problem
 	{
 		if (!open(token)) return;
-		final Atom atom = getAtom(atomId);
-		if (atom != null)
-			atom.addExample(this, exampleId);
-		close();
+		try
+		{
+			getAtom(atomId).ifPresent(atom -> atom.addExample(this, exampleId));
+		}
+		finally
+		{
+			close();
+		}
 	}
 
-	public void removeResult(final String token, final int atomId, final String result)
+	public void removeResult(final String token, final String atomId, final String result) throws Problem
 	{
 		if (!open(token)) return;
-		final Atom atom = getAtom(atomId);
-		if (atom != null)
-			atom.addResult(token, result);
-		close();
+		try
+		{
+			getAtom(atomId).ifPresent(atom -> atom.addResult(this, result));
+		}
+		finally
+		{
+			close();
+		}
 	}
 
-	public void addResult(final String token, final int atomId, final String result)
+	public void addResult(final String token, final String atomId, final String result) throws Problem
 	{
 		if (!open(token)) return;
-		final Atom atom = getAtom(atomId);
-		if (atom != null)
-			atom.removeResult(token, result);
-		close();
+		try
+		{
+			getAtom(atomId).ifPresent(atom -> atom.removeResult(this, result));
+		}
+		finally
+		{
+			close();
+		}
 	}
 
 	@Override
-	public Example startById(final String token, final int atomId)
+	public Example startById(final String token, final String atomId) throws Problem
 	{
 		if (!open(token)) return null;
-		final Atom atom = getAtom(atomId);
-		Example example = null;
-		if (atom != null)
-			example = new Example(this, atom);
-		close();
-		return example;
+		try
+		{
+			final Optional<Atom> atomOption = getAtom(atomId);
+			if (atomOption.isPresent())
+				return new Example(this, atomOption.get());
+			return null;
+		}
+		finally
+		{
+			close();
+		}
 	}
 
 	@Override
-	public Example startByName(final String token, final String name)
+	public Example startByName(final String token, final String name) throws Problem
 	{
 		if (!open(token)) return null;
-		final Atom atom = getAtomByName(name);
-		Example example = null;
-		if (atom != null)
-			example = new Example(this, atom);
-		close();
-		return example;
+		try
+		{
+			return new Example(this, getAtomByName(name).orElse(new Atom(this, Field.Name, name)));
+		}
+		finally
+		{
+			close();
+		}
 	}
+
+
 }

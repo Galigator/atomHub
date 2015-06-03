@@ -1,45 +1,49 @@
 package net.katk.model;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlIDREF;
 
 /**
  * Commons are fields shared by all objects of this model.
  */
-@Entity
-public abstract class Common
+@MappedSuperclass
+public abstract class Common implements Comparable<Common>
 {
 	@XmlElement
+	@XmlID
 	@Id
 	@GeneratedValue
 	@Column(name="id")
-	private int _id;
+	private String _id;
 
 	@SuppressWarnings("javadoc")
-	public int getId()
+	public String getId()
 	{
 		return _id;
 	}
 
+	@XmlIDREF
 	@XmlElement
 	@OneToOne
 	@Column(name="group")
-	private Group _group = null;
+	private Party _party = null;
 
 	@SuppressWarnings("javadoc")
-	public Group getGroup()
+	public Party getGroup()
 	{
-		return _group;
+		return _party;
 	}
 
 	@SuppressWarnings("javadoc")
-	public void setGroup(final Group group_)
+	public void setGroup(final Party group_)
 	{
-		_group = group_;
+		_party = group_;
 	}
 
 	@XmlElement
@@ -55,6 +59,12 @@ public abstract class Common
 	public Common(){}
 	protected Common(final Common old)
 	{
-		_group = old._group;
+		_party = old._party;
+	}
+
+	@Override
+	public int compareTo(final Common that)
+	{
+		return that._id.compareTo(this._id);
 	}
 }

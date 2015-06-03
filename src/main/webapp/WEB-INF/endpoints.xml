@@ -17,35 +17,61 @@
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 	http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
-<!-- 
-<bean id="theJmsConfigDoctor" class="org.apache.cxf.transport.jms.JMSConfiguration"
-	p:connectionFactory-ref="jmsConnectionFactory"
-	p:targetDestination="${LOCALPROPERTIES.PROJECTNAME}.${LOCALPROPERTIES.INPUTQUEUE}.${ADAPTERPROPERTIES.NAME}.${ADAPTERPROPERTIES.VERSION}.Doctor"
-/>
 
-<jaxws:endpoint id="DoctorJMS" address="jms:queue:${LOCALPROPERTIES.PROJECTNAME}.${LOCALPROPERTIES.OUTPUTQUEUE}.${ADAPTERPROPERTIES.NAME}.${ADAPTERPROPERTIES.VERSION}.Doctor//"
-	implementor="#DoctorBean">
-	<jaxws:features>
-		<bean class="org.apache.cxf.transport.jms.JMSConfigFeature" p:jmsConfig-ref="theJmsConfigDoctor" />
-	</jaxws:features>
-	<jaxws:properties>
-		<entry key="faultStackTraceEnabled" value="true" />
-		<entry key="exceptionMessageCauseEnabled" value="true" />
-	</jaxws:properties>
-</jaxws:endpoint>
- -->
-<jaxrs:server id="DoctorRS" address="/DoctorRS">
+<jaxrs:server id="StepRS" address="/StepRS">
 	<jaxrs:serviceBeans>
-		<ref bean="DoctorBean"/>
+		<ref bean="StepBean"/>
 	</jaxrs:serviceBeans>
 </jaxrs:server>
-<jaxws:endpoint id="DoctorWS" address="/DoctorWS" implementor="#DoctorBean">
+<jaxws:endpoint id="StepWS" address="/StepWS" implementor="#StepBean">
 	<jaxws:properties>
 		<entry key="faultStackTraceEnabled" value="true" />
 		<entry key="exceptionMessageCauseEnabled" value="true" />
 	</jaxws:properties>
 </jaxws:endpoint>
-<bean id="DoctorBean" class="com.intrinsec.doctor.front.workers.DoctorImpl"/>
+<bean id="StepBean" class="net.katk.compute.StepServices"/>
+
+
+<jaxrs:server id="ExampleRS" address="/ExampleRS">
+	<jaxrs:serviceBeans>
+		<ref bean="ExampleBean"/>
+	</jaxrs:serviceBeans>
+</jaxrs:server>
+<jaxws:endpoint id="ExampleWS" address="/ExampleWS" implementor="#ExampleBean">
+	<jaxws:properties>
+		<entry key="faultStackTraceEnabled" value="true" />
+		<entry key="exceptionMessageCauseEnabled" value="true" />
+	</jaxws:properties>
+</jaxws:endpoint>
+<bean id="ExampleBean" class="net.katk.compute.ExampleServices"/>
+
+
+<jaxrs:server id="AtomRS" address="/AtomRS">
+	<jaxrs:serviceBeans>
+		<ref bean="AtomBean"/>
+	</jaxrs:serviceBeans>
+</jaxrs:server>
+<jaxws:endpoint id="AtomWS" address="/AtomWS" implementor="#AtomBean">
+	<jaxws:properties>
+		<entry key="faultStackTraceEnabled" value="true" />
+		<entry key="exceptionMessageCauseEnabled" value="true" />
+	</jaxws:properties>
+</jaxws:endpoint>
+<bean id="AtomBean" class="net.katk.compute.AtomServices"/>
+
+
+<jaxrs:server id="PeopleRS" address="/PeopleRS">
+	<jaxrs:serviceBeans>
+		<ref bean="PeopleBean"/>
+	</jaxrs:serviceBeans>
+</jaxrs:server>
+<jaxws:endpoint id="PeopleWS" address="/PeopleWS" implementor="#PeopleBean">
+	<jaxws:properties>
+		<entry key="faultStackTraceEnabled" value="true" />
+		<entry key="exceptionMessageCauseEnabled" value="true" />
+	</jaxws:properties>
+</jaxws:endpoint>
+<bean id="PeopleBean" class="net.katk.compute.PeopleServices"/>
 
 
 </beans>

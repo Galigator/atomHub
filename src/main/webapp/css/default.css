@@ -1,0 +1,63 @@
+/* Editor run */
+
+[contenteditable="true"]:active,
+[contenteditable="true"]:focus{
+	border:none;
+	outline:none;
+}
+
+.editorControl{ display:none; }
+
+
+/* Atom */
+.atom {
+	border: 1px solid #DDDDDD;
+		-o-border-radius: 3px 0 0 3px;
+		-moz-border-radius: 3px 0 0 3px;
+		-webkit-border-radius: 3px 0 0 3px;
+	margin : 0 20px 20px 20px;
+}
+.model {}
+.head { color: red; }
+.name { color: orange; }
+.verbe { color: orange; }
+.object { color: orange; }
+.core { color: red; }
+.abstract { color: orange; }
+.description { color: orange; }
+.meta { color: red; }
+.level { color: orange; }
+.directory { color: orange; }
+.version { color: orange; }
+.interaction { color: red; }
+.eventQueue { color: orange; }
+.examples { color: orange; }
+.results { color: orange; }
+
+/* Step */
+.author {}
+.core{}
+.evalDate{}
+.evaluation{}
+.note{}
+.params{}
+.result{}
+
+/* Exemple */
+.example {}
+.externalResources {}
+.externalResourceId {}
+.externalResourceType {}
+.usability {}
+.nominal {}
+.obselete {}
+.origine {}
+.path {}
+.env {}
+.reactors {}
+.state {}
+.nextsAtoms {}
+.nextsRelations {}
+
+/* templates */
+.templates { display: none; }

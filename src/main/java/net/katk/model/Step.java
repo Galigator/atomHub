@@ -3,13 +3,16 @@ package net.katk.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 
 import net.katk.compute.Token;
 
@@ -17,13 +20,12 @@ import net.katk.compute.Token;
  * A step is a most little part of job that can be done using an atom in an
  * example.
  */
-@Entity
+@Entity(name="step")
 public class Step extends Common
 {
-	@XmlElement
+	@XmlIDREF
 	@OneToMany
 	@OrderColumn(name = "index_params")
-	@Column(name="params")
 	// @OrderBy("index")
 	private List<Param> _params = new ArrayList<Param>();
 
@@ -37,8 +39,8 @@ public class Step extends Common
 		_params = params;
 	}
 
-	@XmlElement
-	@ManyToOne
+	@XmlIDREF
+	@ManyToOne(cascade=CascadeType.PERSIST,fetch=FetchType.LAZY)
 	@Column(name="core")
 	private Atom _core = null;
 
@@ -111,8 +113,8 @@ public class Step extends Common
 		_note = note;
 	}
 
-	@XmlElement
-	@ManyToOne
+	@XmlIDREF
+	@ManyToOne(cascade=CascadeType.PERSIST,fetch=FetchType.LAZY)
 	@Column(name="author")
 	private People _author = null;
 
@@ -128,7 +130,7 @@ public class Step extends Common
 
 	public Step(final Token token, final List<Param> params, final Atom core, final String result, final String evaluation, final long date, final String note, final People author)
 	{
-		setGroup(token.getGroup()); // TODO set the Group.
+		setGroup(token.getGroup()); // TODO set the Party.
 		_params.addAll(params);
 		setCore(core);
 		setResult(result);

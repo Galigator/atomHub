@@ -3,7 +3,10 @@
 open(OUT,">endpoints.xml");
 
 my %h = (
-  "Doctor" => "com.intrinsec.doctor.front.workers.DoctorImpl"
+  "Atom" => "net.katk.compute.AtomServices",
+  "Step" => "net.katk.compute.StepServices",
+  "Example" => "net.katk.compute.ExampleServices",
+  "People" => "net.katk.compute.PeopleServices"
 );
 
 
@@ -17,20 +20,20 @@ my $rs_name   = $name . "RS";
 my $ws_name   = $name . "WS";
 my $bean_name = $name . "Bean";
 
-print OUT	"<bean id=\"theJmsConfig".$name."\" class=\"org.apache.cxf.transport.jms.JMSConfiguration\"\n";
-print OUT	"	p:connectionFactory-ref=\"jmsConnectionFactory\"\n";
-print OUT	"	p:targetDestination=\"\${LOCALPROPERTIES.PROJECTNAME}.\${LOCALPROPERTIES.INPUTQUEUE}.\${ADAPTERPROPERTIES.NAME}.\${ADAPTERPROPERTIES.VERSION}.".$name."\"\n";
-print OUT	"/>\n";
-print OUT	"<jaxws:endpoint id=\"$jms_name\" address=\"jms:queue:\${LOCALPROPERTIES.PROJECTNAME}.\${LOCALPROPERTIES.OUTPUTQUEUE}.\${ADAPTERPROPERTIES.NAME}.\${ADAPTERPROPERTIES.VERSION}.".$name."//\"\n";
-print OUT	"	implementor=\"#$bean_name\">\n";
-print OUT	"	<jaxws:features>\n";
-print OUT	"		<bean class=\"org.apache.cxf.transport.jms.JMSConfigFeature\" p:jmsConfig-ref=\"theJmsConfig".$name."\" />\n";
-print OUT	"	</jaxws:features>\n";
-print OUT	"	<jaxws:properties>\n";
-print OUT	"		<entry key=\"faultStackTraceEnabled\" value=\"true\" />\n";
-print OUT	"		<entry key=\"exceptionMessageCauseEnabled\" value=\"true\" />\n";
-print OUT	"	</jaxws:properties>\n";
-print OUT	"</jaxws:endpoint>\n";
+# print OUT	"<bean id=\"theJmsConfig".$name."\" class=\"org.apache.cxf.transport.jms.JMSConfiguration\"\n";
+# print OUT	"	p:connectionFactory-ref=\"jmsConnectionFactory\"\n";
+# print OUT	"	p:targetDestination=\"\${LOCALPROPERTIES.PROJECTNAME}.\${LOCALPROPERTIES.INPUTQUEUE}.\${ADAPTERPROPERTIES.NAME}.\${ADAPTERPROPERTIES.VERSION}.".$name."\"\n";
+# print OUT	"/>\n";
+# print OUT	"<jaxws:endpoint id=\"$jms_name\" address=\"jms:queue:\${LOCALPROPERTIES.PROJECTNAME}.\${LOCALPROPERTIES.OUTPUTQUEUE}.\${ADAPTERPROPERTIES.NAME}.\${ADAPTERPROPERTIES.VERSION}.".$name."//\"\n";
+# print OUT	"	implementor=\"#$bean_name\">\n";
+# print OUT	"	<jaxws:features>\n";
+# print OUT	"		<bean class=\"org.apache.cxf.transport.jms.JMSConfigFeature\" p:jmsConfig-ref=\"theJmsConfig".$name."\" />\n";
+# print OUT	"	</jaxws:features>\n";
+# print OUT	"	<jaxws:properties>\n";
+# print OUT	"		<entry key=\"faultStackTraceEnabled\" value=\"true\" />\n";
+# print OUT	"		<entry key=\"exceptionMessageCauseEnabled\" value=\"true\" />\n";
+# print OUT	"	</jaxws:properties>\n";
+# print OUT	"</jaxws:endpoint>\n";
 print OUT	"<jaxrs:server id=\"$rs_name\" address=\"/$rs_name\">\n";
 print OUT	"	<jaxrs:serviceBeans>\n";
 print OUT	"		<ref bean=\"$bean_name\"/>\n";

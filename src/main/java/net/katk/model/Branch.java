@@ -3,24 +3,26 @@ package net.katk.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 
 /**
  * The branch(s) are representation of atoms serial's chain
  */
-@Entity
+@Entity(name="branch")
 public class Branch extends Common
 {
 	@XmlElement
 	@OneToMany
 	@OrderColumn(name = "index_revisions")
-	@Column(name="revisions")
 	// @OrderBy("index_revisions")
 	private List<Atom> _revisions = new ArrayList<Atom>();
 
@@ -65,8 +67,8 @@ public class Branch extends Common
 		_annotations = annotations_;
 	}
 
-	@XmlElement
-	@ManyToOne
+	@XmlIDREF
+	@ManyToOne(cascade=CascadeType.PERSIST,fetch=FetchType.LAZY)
 	@Column(name="from")
 	private Branch _from = null;
 
@@ -80,17 +82,17 @@ public class Branch extends Common
 		_from = from_;
 	}
 
-	@XmlElement
-	@ManyToOne
+	@XmlIDREF
+	@ManyToOne(cascade=CascadeType.PERSIST,fetch=FetchType.LAZY)
 	@Column(name="owner")
-	private Group _owner = null;
+	private Party _owner = null;
 
-	public Group getOwner()
+	public Party getOwner()
 	{
 		return _owner;
 	}
 
-	public void setOwner(final Group owner_)
+	public void setOwner(final Party owner_)
 	{
 		_owner = owner_;
 	}
@@ -98,7 +100,6 @@ public class Branch extends Common
 	@XmlElement
 	@OneToMany
 	@OrderColumn(name = "index_watchers")
-	@Column(name="watchers")
 	// @OrderBy("index_watchers")
 	private List<People> _watchers = new ArrayList<People>();
 

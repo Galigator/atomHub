@@ -2,12 +2,13 @@ package net.katk.adapter;
 
 import java.util.List;
 
+
 public class Reaction
 {
 	// Altered element. Should be reload totally or partially.
-	public int _alterExamplesAtomId = 0;
-	public int _alterExample = 0;
-	public int _alterStep = 0;
+	public String _alterExamplesAtom = null;
+	public String _alterStep = null;
+	public String _alterExample = null;
 	
 	// Question ask to the interface. The user should answer if possible.
 	// The user can choose another question/answer if he want.

@@ -1,18 +1,20 @@
 package net.katk.model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 
 import net.katk.compute.Token;
 
@@ -23,8 +25,8 @@ import org.slf4j.LoggerFactory;
  * An atom is a part knowledge that can't be cut without resulting in a loose of
  * information in a given context.
  */
-@Entity
-public class Atom extends Common 
+@Entity(name="atom")
+public class Atom extends Common
 {
 	private transient static final Logger _logger = LoggerFactory.getLogger(Atom.class.getName());
 	
@@ -83,8 +85,9 @@ public class Atom extends Common
 		return _description;
 	}
 
-	@XmlElement
-	@ManyToOne
+	@XmlIDREF
+	@XmlElement // The user don't need this, as it is too mush large.
+	@ManyToOne(cascade=CascadeType.PERSIST,fetch=FetchType.LAZY)
 	@Column(name="branch")
 	private Branch _branch = null;
 
@@ -95,7 +98,8 @@ public class Atom extends Common
 	}
 
 	@XmlElement
-	@ManyToOne
+	@XmlIDREF
+	@ManyToOne(cascade=CascadeType.PERSIST,fetch=FetchType.LAZY)
 	@Column(name="recette")
 	private Example _recette = null;
 
@@ -105,11 +109,11 @@ public class Atom extends Common
 		return _recette;
 	}
 
-	@XmlElement
+	//@XmlElement // We don't want to give the user the full database at each query
 	@OneToMany
 	@OrderColumn(name = "index_examples")
-	@Column(name="examples")
 	// @OrderBy("index")
+	@XmlIDREF
 	private List<Example> _examples = new ArrayList<Example>(1);
 
 	@SuppressWarnings("javadoc")
@@ -145,14 +149,14 @@ public class Atom extends Common
 	// private OwlProfile profile;
 	// private OwlGrounding grounding;
 
-	@XmlElement
 	@ElementCollection
+	@OrderColumn(name = "index_results")
 	@Column(name="results")
 	// TODO : Check the size of the strings in Element Collection.
-	private Set<String> _results = new HashSet<String>();
+	private List<String> _results = new ArrayList<String>();
 
 	@SuppressWarnings("javadoc")
-	public Set<String> getResults()
+	public List<String> getResults()
 	{
 		return _results;
 	}
@@ -178,7 +182,7 @@ public class Atom extends Common
 	}
 
 	public Atom(){}
-	public Atom(final Atom old)
+	protected Atom(final Atom old)
 	{
 		super(old);
 		_name = old._name;
@@ -200,13 +204,22 @@ public class Atom extends Common
 		assert field != null;
 		assert value != null;
 		
-		_branch = new Branch(); // TODO set the Group and Group to the branch.
-		setGroup(token.getGroup()); // TODO set the Group.
+		_branch = new Branch(); // TODO set the Party and Owner to the branch.
+		setGroup(token.getGroup()); // TODO set the Party.
 		
 		save(token, field, value);
 	}
 	
 	// Methods that need Atom versionning.
+
+	public Atom(final Token token, final String name, final String description,
+			final String resume, final String verbe, final String object, final String branchId,
+			final String directory, final String eventQueue, final String recetteId)
+	{
+		_branch = new Branch(); // TODO set the Party and Owner to the branch.
+		setGroup(token.getGroup()); // TODO set the Party.
+		save(token, name, description, resume, verbe, object,	branchId, directory, eventQueue, recetteId);
+	}
 
 	public enum Field
 	{
@@ -221,6 +234,41 @@ public class Atom extends Common
 		Recette
 	}
 
+	private void save(final Token token, final String name, final String description,
+			final String resume, final String verbe, final String object, final String branchId,
+			final String directory, final String eventQueue, final String recetteId)
+	{
+		if (_logger.isTraceEnabled())
+			_logger.trace("Token:"+token+"\tsave all");
+		
+		_name = (String) name;
+		_verbe = (String) verbe;
+		_object = (String) object;
+		_abstract = (String) resume;
+		_description = (String) description;
+		_directory = (String) directory;
+		_eventQueue = (String) eventQueue;
+
+		if (branchId != null && !branchId.equals(""))
+		{
+			final Optional<Branch> branchOption = token.getBranch((String)branchId);
+			if (branchOption.isPresent())
+				_branch = branchOption.get(); 
+		}
+		
+		if (recetteId != null && !recetteId.equals(""))
+		{
+			final Optional<Example> exampleOption = token.getExample((String)recetteId);
+			if (exampleOption.isPresent())
+				_recette = exampleOption.get(); 
+		}
+		
+		if (_logger.isDebugEnabled())
+			_logger.debug("persisting : " + this);
+		
+		token._em.persist(this);
+	}
+	
 	private void save(final Token token, final Field field, final Object value)
 	{
 		if (_logger.isTraceEnabled())
@@ -237,11 +285,11 @@ public class Atom extends Common
 			case EventQueue : { _eventQueue = (String) value; break; }
 			case Branch : 
 			{
-				int id = 0;
-				if (value instanceof Integer)
+				if (value instanceof String)
 				{
-					id = ((Integer) value).intValue();
-					_branch = token.getBranch(id);;
+					final Optional<Branch> branchOption = token.getBranch((String)value);
+					if (branchOption.isPresent())
+						_branch = branchOption.get(); 
 				}
 				else
 					_logger.error("Save recette format error.");
@@ -249,17 +297,20 @@ public class Atom extends Common
 			}
 			case Recette : 
 			{
-				int id = 0;
 				if (value instanceof Integer)
 				{
-					id = ((Integer) value).intValue();
-					_recette = token.getExample(id);;
+					final Optional<Example> exampleOption = token.getExample((String)value);
+					if (exampleOption.isPresent())
+						_recette = exampleOption.get(); 
 				}
 				else
 					_logger.error("Save recette format error.");
 				break;
 			}
 		}
+		
+		if (_logger.isDebugEnabled())
+			_logger.debug("persisting : " + this);
 		
 		token._em.persist(this);
 	}
@@ -272,32 +323,42 @@ public class Atom extends Common
 		return atom_new;
 	}
 	
+	public Atom update(final Token token, String name,
+			String description, String resume, String verbe, String object,
+			String branchId, String directory, String eventQueue,
+			String recetteId)
+	{
+		final Atom atom_new = new Atom(this);
+		atom_new.save(token, name, description, resume, verbe, object,	branchId, directory, eventQueue, recetteId);
+		return atom_new;
+	}
+	
 	// Methods that don't need Atom versionning.
 	
-	public void removeExample(final Token token, final int exampleId)
+	public void removeExample(final Token token, final String exampleId)
 	{
-		final Example example = token.getExample(exampleId);
-		if (example != null)
-			if (!_examples.contains(example))
-				_examples.remove(example);
+		final Optional<Example> exampleOption = token.getExample(exampleId);
+		if (exampleOption.isPresent())
+			if (!_examples.contains(exampleOption.get()))
+				_examples.remove(exampleOption.get());
 	}
 	
-	public void addExample(final Token token, final int exampleId)
+	public void addExample(final Token token, final String exampleId)
 	{
-		final Example example = token.getExample(exampleId);
-		if (example != null)
-			if (!_examples.contains(example))
-				_examples.add(example);
+		final Optional<Example> exampleOption = token.getExample(exampleId);
+		if (exampleOption.isPresent())
+			if (!_examples.contains(exampleOption.get()))
+				_examples.add(exampleOption.get());
 	}
 
-	public void removeResult(final String token, final String result)
+	public void removeResult(final Token token, final String result)
 	{
 		if (result != null)
 			if (!_results.contains(result))
 				_results.remove(result);
 	}
 
-	public void addResult(final String token, final String result)
+	public void addResult(final Token token, final String result)
 	{
 		if (result != null)
 			if (!_results.contains(result))

@@ -1,9 +1,14 @@
 package net.katk.model.reactors.tree;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlElement;
 
@@ -15,11 +20,11 @@ import net.katk.model.Param;
 import net.katk.model.Reactor;
 import net.katk.model.Step;
 
-@Entity
+@Entity(name="treereactor")
 public class TreeReactor extends Reactor
 {
 	@XmlElement
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.PERSIST,fetch=FetchType.LAZY)
 	@Column(name="atom")
 	private Atom _atom = null;
 
@@ -73,8 +78,21 @@ public class TreeReactor extends Reactor
 		final Atom atom = getAtom();
 		final List<Example> examples = TreeCompareFunctions.filter(atom.getExamples(), example);
 		
+		final Set<Atom> atoms = new HashSet<Atom>();
+		examples.forEach(e ->
+			{
+				final List<Step> p = e.getPath();
+				if (!p.isEmpty())
+					atoms.add(p.get(p.size()-1).getCore());
+			} 
+		);
+		
+		reaction._askAtomId = new ArrayList<>(atoms.size());
+		atoms.forEach(a -> reaction._askAtomId.add(Integer.parseInt(a.getId())));
+		
 		// Select the next step in the tree
 		final Step nextStepInTree = null;
+		
 		return out;
 	}
 	
@@ -113,7 +131,7 @@ public class TreeReactor extends Reactor
 	}
 
 	@Override
-	public Reaction delete(final Token token, final Example example, final Step step)
+	public Reaction remove(final Token token, final Example example, final Step step)
 	{
 		// TODO Auto-generated method stub
 		return null;
