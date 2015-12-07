@@ -1,14 +1,12 @@
 package net.katk.model.reactors;
 
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlElement;
-
 import net.katk.adapter.Reaction;
 import net.katk.compute.Token;
 import net.katk.model.Atom;
@@ -17,20 +15,23 @@ import net.katk.model.Param;
 import net.katk.model.Reactor;
 import net.katk.model.Step;
 
-@Entity(name="statreactor")
+@Entity(name = "statreactor")
 public class StatReactor extends Reactor
 {
 	@XmlElement
-	@ManyToOne(cascade=CascadeType.PERSIST,fetch=FetchType.LAZY)
-	@Column(name="atom")
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+	@Column(name = "atom")
 	private Atom _atom = null;
 
 	public Atom getAtom()
 	{
 		return _atom;
 	}
-	
-	public StatReactor(){};
+
+	public StatReactor()
+	{
+	}
+
 	public StatReactor(final Token token, final Atom atom)
 	{
 		_atom = atom;
@@ -38,8 +39,7 @@ public class StatReactor extends Reactor
 	}
 
 	@Override
-	public Reaction add(final Token token, final Example example, final List<Param> params,
-			final Atom atom, final String result, final String evaluation, final long date, final String note) 
+	public Reaction add(final Token token, final Example example, final List<Param> params, final Atom atom, final String result, final String evaluation, final long date, final String note)
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -50,7 +50,7 @@ public class StatReactor extends Reactor
 	{
 		return null;
 	}
-	
+
 	@Override
 	public Reaction back(final Token token, final Example example)
 	{
@@ -80,11 +80,10 @@ public class StatReactor extends Reactor
 	}
 
 	@Override
-	public Reaction replace(final Token token, final Example example, final Step step,	final Atom atom, final String result, final String evaluation)
+	public Reaction replace(final Token token, final Example example, final Step step, final Atom atom, final String result, final String evaluation)
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 }

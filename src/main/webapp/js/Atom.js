@@ -333,13 +333,20 @@ function AtomServices()
 		var saveAttributes =
 			function()
 			{
-				alert("coucou");
-				// atomServices.save(atom.__id, name, description, resume, verbe, object, branchId, directory, eventQueue, recetteId);
+				atomServices.save(atom.__id, name, description, resume, verbe, object, branchId, directory, eventQueue, recetteId);
 			}
 		;
 		
 		console.log(path);  // "#8404 > .nextsAtoms"
-		$(path+" .editorControl > .save").click(saveAttributes);
+		$(path+" .editorControl .save").click(saveAttributes);
+		
+	 	var cancelDialog =
+			function()
+			{
+	 			$(path + " .editorControl").hide(1000);
+			}
+		;
+		$(path+" .editorControl .cancel").click(cancelDialog);
 	}
 	
 	this.setAtom = function(root, atom)

@@ -19,10 +19,9 @@ public abstract class Common implements Comparable<Common>
 	@XmlID
 	@Id
 	@GeneratedValue
-	@Column(name="id")
+	@Column(name = "id")
 	private String _id;
 
-	@SuppressWarnings("javadoc")
 	public String getId()
 	{
 		return _id;
@@ -31,32 +30,37 @@ public abstract class Common implements Comparable<Common>
 	@XmlIDREF
 	@XmlElement
 	@OneToOne
-	@Column(name="group")
+	@Column(name = "group")
 	private Party _party = null;
 
-	@SuppressWarnings("javadoc")
 	public Party getGroup()
 	{
 		return _party;
 	}
 
-	@SuppressWarnings("javadoc")
 	public void setGroup(final Party group_)
 	{
 		_party = group_;
 	}
 
 	@XmlElement
-	@Column(name="date")
+	@Column(name = "date")
 	private long _date = System.currentTimeMillis();
 
-	@SuppressWarnings("javadoc")
 	public long getDate()
 	{
 		return _date;
 	}
-	
-	public Common(){}
+
+	protected void setDate(final long date)
+	{
+		_date = date;
+	}
+
+	public Common()
+	{
+	}
+
 	protected Common(final Common old)
 	{
 		_party = old._party;
@@ -65,6 +69,6 @@ public abstract class Common implements Comparable<Common>
 	@Override
 	public int compareTo(final Common that)
 	{
-		return that._id.compareTo(this._id);
+		return that._id.compareTo(_id);
 	}
 }

@@ -138,9 +138,9 @@ public class DistanceDEdition extends De<Character>
 			final char a, final char b, final float c)
 	{
 		Action ac = (a == b) ? Action.CONSERVATION : Action.SUBSTITUTION;
-		return new Couple<Couple<Action, Float>, Couple<Character, Character>>(
-				new Couple<Action, Float>(ac, c),
-				new Couple<Character, Character>(new Character(a),
+		return new Couple<>(
+				new Couple<>(ac, c),
+				new Couple<>(new Character(a),
 						new Character(b)));
 	}
 
@@ -150,7 +150,7 @@ public class DistanceDEdition extends De<Character>
 	public List<Couple<Couple<Action, Float>, Couple<Character, Character>>> annote(
 			final List<Coeffs> chemin, final String a, final String b)
 	{
-		List<Couple<Couple<Action, Float>, Couple<Character, Character>>> resultat = new ArrayList<Couple<Couple<Action, Float>, Couple<Character, Character>>>(
+		List<Couple<Couple<Action, Float>, Couple<Character, Character>>> resultat = new ArrayList<>(
 				chemin.size());
 		char[] str_a = a.toCharArray();
 		char[] str_b = b.toCharArray();
@@ -206,7 +206,7 @@ public class DistanceDEdition extends De<Character>
 	public static void main(String[] argv)
 	{
 
-		Collection<Coeffs> coeffs = new ArrayList<Coeffs>();
+		Collection<Coeffs> coeffs = new ArrayList<>();
 		Coeffs[] ta =
 		{
 				new Coeffs((float) 0.9, (int) 1, (int) 0),
@@ -217,12 +217,12 @@ public class DistanceDEdition extends De<Character>
 			coeffs.add(t);
 
 		DistanceDEdition d = new DistanceDEdition(coeffs);
-		List<Couple<String, String>> l = new ArrayList<Couple<String, String>>(
+		List<Couple<String, String>> l = new ArrayList<>(
 				3);
-		l.add(new Couple<String, String>("Bonjour", "Bonour"));
-		l.add(new Couple<String, String>("Bonjour", "Bonguour"));
-		l.add(new Couple<String, String>("Bonjour", "Aonjour"));
-		l.add(new Couple<String, String>("Bonjour", "Bonjour"));
+		l.add(new Couple<>("Bonjour", "Bonour"));
+		l.add(new Couple<>("Bonjour", "Bonguour"));
+		l.add(new Couple<>("Bonjour", "Aonjour"));
+		l.add(new Couple<>("Bonjour", "Bonjour"));
 
 		for (Couple<String, String> c : l)
 		{

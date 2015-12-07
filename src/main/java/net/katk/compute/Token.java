@@ -137,7 +137,7 @@ public class Token
 
 	public List<Atom> getAtoms(final List<String> ids)
 	{
-		final List<Atom> atoms = new ArrayList<Atom>();
+		final List<Atom> atoms = new ArrayList<>();
 		for(final String id : ids)
 		{
 			final Atom atom = _em.find(Atom.class, id);

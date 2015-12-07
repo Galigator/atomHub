@@ -42,7 +42,7 @@ abstract class De<T/* implements Comparable */>
 	 */
 	public De()
 	{
-		coeffs = new LinkedList<Coeffs>();
+		coeffs = new LinkedList<>();
 		Coeffs[] ta =
 		{
 				new Coeffs((float) 2, (int) 1, (int) 0),
@@ -146,7 +146,7 @@ abstract class De<T/* implements Comparable */>
 		if (paths == null) return null;
 		final int i = paths.length - 1;
 		final int j = paths[i].length - 1;
-		List<Coeffs> l = new LinkedList<Coeffs>();
+		List<Coeffs> l = new LinkedList<>();
 		Coeffs node = new Coeffs(paths[i][j], i, j);
 		l.add(node);
 		boolean stop = false;
@@ -189,8 +189,8 @@ abstract class De<T/* implements Comparable */>
 	{
 		Action ac = (0.0 == distance(a, b)) ? Action.CONSERVATION
 				: Action.SUBSTITUTION;
-		return new Couple<Couple<Action, Float>, Couple<T, T>>(
-				new Couple<Action, Float>(ac, c), new Couple<T, T>(a, b));
+		return new Couple<>(
+				new Couple<>(ac, c), new Couple<>(a, b));
 	}
 
 	/**
@@ -199,7 +199,7 @@ abstract class De<T/* implements Comparable */>
 	public List<Couple<Couple<Action, Float>, Couple<T, T>>> annote(
 			final List<Coeffs> chemin, final T[] a, final T[] b)
 	{
-		List<Couple<Couple<Action, Float>, Couple<T, T>>> resultat = new ArrayList<Couple<Couple<Action, Float>, Couple<T, T>>>(
+		List<Couple<Couple<Action, Float>, Couple<T, T>>> resultat = new ArrayList<>(
 				chemin.size());
 		Coeffs pred = null;
 		for (Coeffs t : chemin)

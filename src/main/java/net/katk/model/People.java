@@ -1,8 +1,7 @@
 package net.katk.model;
 
-import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Vector;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
@@ -10,18 +9,17 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
-
 import net.katk.compute.Token;
 
 /**
  * A people is the abstraction of a physical person.
  */
-@Entity(name="people")
+@Entity(name = "people")
 public class People extends Common
 {
 	@XmlElement
 	@Lob
-	@Column(name="externalResourceType")
+	@Column(name = "externalResourceType")
 	private String _externalResourceType = null; // ex : "RTMS"
 
 	public String getExternalResourceType()
@@ -36,7 +34,7 @@ public class People extends Common
 
 	@XmlElement
 	@Lob
-	@Column(name="externalResourceId")
+	@Column(name = "externalResourceId")
 	private String _externalResourceId = null; // ex : n of RTMS ticket.
 
 	public String getExternalResourceId()
@@ -51,7 +49,7 @@ public class People extends Common
 
 	@XmlElement
 	@Lob
-	@Column(name="mail")
+	@Column(name = "mail")
 	private String _mail = null;
 
 	public String getMail()
@@ -66,7 +64,7 @@ public class People extends Common
 
 	@XmlElement
 	@Lob
-	@Column(name="name")
+	@Column(name = "name")
 	private String _name = null;
 
 	public String getName()
@@ -83,15 +81,22 @@ public class People extends Common
 	@OneToMany
 	@OrderColumn(name = "index_bookmarks")
 	// @OrderBy("index")
-	private List<Example> _bookmarks = new ArrayList<Example>();
+	private List<Example> _bookmarks = new Vector<>();
 
-	@SuppressWarnings("javadoc")
 	public List<Example> getBookmarks()
 	{
 		return _bookmarks;
 	}
-	
-	public People(){}
+
+	protected void setBookmarks(final List<Example> bookmarks)
+	{
+		_bookmarks = bookmarks;
+	}
+
+	public People()
+	{
+	}
+
 	public People(final Token token, final String name, final String mail)
 	{
 		setMail(mail);

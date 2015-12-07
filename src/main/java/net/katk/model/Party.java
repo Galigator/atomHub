@@ -31,7 +31,7 @@ public class Party extends Common
 
 	@XmlElement
 	@OneToMany @OrderColumn(name = "index_members")
-	private List<People> _members = new ArrayList<People>(); // boss must also be a members.
+	private List<People> _members = new ArrayList<>(); // boss must also be a members.
 
 	public List<People> getMembers()
 	{
@@ -50,7 +50,7 @@ public class Party extends Common
 
 	@XmlElement
 	@OneToMany @OrderColumn(name = "index_children")
-	private List<Party> _children = new ArrayList<Party>();
+	private List<Party> _children = new ArrayList<>();
 
 	public List<Party> getChidren()
 	{

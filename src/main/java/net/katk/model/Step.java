@@ -27,7 +27,7 @@ public class Step extends Common
 	@OneToMany
 	@OrderColumn(name = "index_params")
 	// @OrderBy("index")
-	private List<Param> _params = new ArrayList<Param>();
+	private List<Param> _params = new ArrayList<>();
 
 	public List<Param> getParams()
 	{

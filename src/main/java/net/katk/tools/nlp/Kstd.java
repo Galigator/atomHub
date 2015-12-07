@@ -181,7 +181,7 @@ class Kstd
 	 */
 	public static List<String> run(String com)
 	{
-		Vector<String> res = new Vector<String>();
+		Vector<String> res = new Vector<>();
 		String line = null;
 		try
 		{

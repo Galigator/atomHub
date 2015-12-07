@@ -11,7 +11,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven-bundle-plugin.version>2.3.7</maven-bundle-plugin.version>
 	
-		<tools.org.apache.openjpa.version>2.4.0-SNAPSHOT</tools.org.apache.openjpa.version><!-- 2.3.0 -->
+		<tools.org.apache.openjpa.version>2.4.0</tools.org.apache.openjpa.version>
 		<tools.org.postgresql.version>9.2-1003-jdbc4</tools.org.postgresql.version>
 		<tools.javax.servlet.version>2.5</tools.javax.servlet.version>
 		<tools.commons-logging.version>1.0.4</tools.commons-logging.version>
@@ -60,11 +60,20 @@
 	<dependencies>
 	
 		<!-- Dependencys for jpa management. -->
+		<!-- 
 		<dependency>
 			<groupId>org.apache.openjpa</groupId>
 			<artifactId>openjpa-persistence-jdbc</artifactId>
 			<version>${tools.org.apache.openjpa.version}</version>
 		</dependency>
+		 -->
+
+		<dependency>
+			<groupId>org.apache.openjpa</groupId>
+			<artifactId>openjpa-all</artifactId>
+			<version>${tools.org.apache.openjpa.version}</version>
+		</dependency>
+
 		
 		<dependency>
 			<groupId>org.postgresql</groupId>

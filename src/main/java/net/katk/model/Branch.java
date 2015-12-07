@@ -24,7 +24,7 @@ public class Branch extends Common
 	@OneToMany
 	@OrderColumn(name = "index_revisions")
 	// @OrderBy("index_revisions")
-	private List<Atom> _revisions = new ArrayList<Atom>();
+	private List<Atom> _revisions = new ArrayList<>();
 
 	public List<Atom> getRevisions()
 	{
@@ -101,7 +101,7 @@ public class Branch extends Common
 	@OneToMany
 	@OrderColumn(name = "index_watchers")
 	// @OrderBy("index_watchers")
-	private List<People> _watchers = new ArrayList<People>();
+	private List<People> _watchers = new ArrayList<>();
 
 	public List<People> getWatchers()
 	{

@@ -40,7 +40,7 @@ public class Example extends Common
 	@OneToMany
 	@OrderColumn(name = "index")
 	// @OrderBy("index")
-	private List<Step> _path = new ArrayList<Step>();
+	private List<Step> _path = new ArrayList<>();
 
 	public List<Step> getPath()
 	{
@@ -125,7 +125,7 @@ public class Example extends Common
 	@OneToMany
 	@OrderColumn(name = "index_reactor")
 	@XmlIDREF
-	private List<Reactor> _reactors = new ArrayList<Reactor>(2);
+	private List<Reactor> _reactors = new ArrayList<>(2);
 
 	public List<Reactor> getReactors()
 	{

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html> <!--  http://localhost:8080/atomHub/  -->
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="FF=24,IE=9" />
+	<meta http-equiv="expires" content="Fri, 11 Oct 2013 11:30:00 GMT" />
+	<title>AtomHub test page.</title>
+	
+	<link   type="image/png" href="icons/atom/atome-icone-9016-16.png"          rel="icon"       />
+	<link   type="text/css"  href="css/default.css"                                 rel="Stylesheet" />
+	
+	<script type="text/javascript" src="lib/jquery-1.11.1.min.js"></script>
+	
+	<script type="text/javascript" src="js/cxf-utils.js"></script>
+	<script type="text/javascript" src="js/AtomServicesService.js"></script>
+	<script type="text/javascript" src="js/ExampleServicesService.js"></script>
+	<script type="text/javascript" src="js/StepServicesService.js"></script>
+	<script type="text/javascript" src="js/PeopleServicesService.js"></script>
+	<script type="text/javascript" src="js/Atom.js"></script>
+	<script type="text/javascript" src="js/Example.js"></script>
+	<script type="text/javascript" src="js/Step.js"></script>
+	<script type="text/javascript" src="js/People.js"></script>
+</head>
+<body>
+	<script type="text/javascript">
+		var peopleServices = new PeopleServices();
+		peopleServices.init("osef");
+		peopleServices.createPeople("galigator","galigator@webmail.com");
+	</script>
+</body>
+</html>
