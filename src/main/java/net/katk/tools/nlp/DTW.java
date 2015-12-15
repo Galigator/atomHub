@@ -1,15 +1,15 @@
 package net.katk.tools.nlp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Calcule de la distance d'edition
+ * Calcul de la distance d'edition
  */
-abstract class De<T/* implements Comparable */>
+public interface DTW<T>
 {
 
 	/**
@@ -17,43 +17,37 @@ abstract class De<T/* implements Comparable */>
 	 * par deux. C'est pour eviter les depassements de capacite dans les
 	 * calcules.
 	 */
-	private final static float max_num = Float.MAX_VALUE / 2;
-
-	/**
-	 * Chaque triplet contient dans l'ordre . : first : Le coefficiants de
-	 * ponderation. second : La progression en X third : La progression en Y
-	 */
-	private final Collection<Coeffs> coeffs;
+	public final static float MAX_NUM = Float.MAX_VALUE / 2;
 
 	/**
 	 * La valeur d'initialisation des chemins. Elle doit etre plus petites que
 	 * toutes les autres valeurs utiliser.
 	 */
-	private final float initial_cost = 0;
+	public final static float INITIAL_COST = 0;
 
-	/**
-	 * Le poids de tous les elements de chemins
-	 */
-	protected float[][] paths;
+	public Collection<Coeffs> getCoeffs();
+
+	public void setCoeffs(final Collection<Coeffs> coeffs);
+
+	public float[][] getPaths();
+
+	public void setPaths(float[][] paths);
 
 	/**
 	 * Initialiseur regle avec une progression lineaire moins couteuse que les
 	 * progressions indirectes.
 	 */
-	public De()
+	default void autoInit()
 	{
-		coeffs = new LinkedList<>();
-		final Coeffs[] ta = { new Coeffs((float) 2, 1, 0), new Coeffs((float) 1, 1, 1), new Coeffs((float) 2, 0, 1) };
-		for (final Coeffs t : ta)
-			coeffs.add(t);
+		setCoeffs(Arrays.asList(new Coeffs((float) 2, 1, 0), new Coeffs((float) 1, 1, 1), new Coeffs((float) 2, 0, 1)));
 	}
 
 	/**
 	 * Initiliseur avec calcul de chemin minimum regle par le parametre.
 	 */
-	public De(final Collection<Coeffs> c)
+	default void init(final Collection<Coeffs> c)
 	{
-		coeffs = c;
+		setCoeffs(c);
 	}
 
 	/**
@@ -62,19 +56,17 @@ abstract class De<T/* implements Comparable */>
 	 * partie de cette formule est duplique dans une sous fonction du backtrack
 	 * (get_min).
 	 */
-	private float direction(final int i, final int j)
+	default float direction(final int i, final int j)
 	{
-		float m = max_num, tmp = max_num;
-		for (final Coeffs c : coeffs)
-		{
+		float m = MAX_NUM, tmp = MAX_NUM;
+		for (final Coeffs c : getCoeffs())
 			if (i >= c.second && j >= c.third)
 			{
-				tmp = c.first * paths[i][j] + paths[i - c.second][j - c.third];
+				tmp = c.first * getPaths()[i][j] + getPaths()[i - c.second][j - c.third];
 				if (tmp < m)
 					m = tmp;
 			}
-		}
-		return (m >= max_num) ? 0 : m;
+		return (m >= MAX_NUM) ? 0 : m;
 	}
 
 	/**
@@ -87,30 +79,32 @@ abstract class De<T/* implements Comparable */>
 	 * risque de faire des axes exterieurs a la matrices, Il faut donc
 	 * determiner un criteres d'encapsulation de la matrice.
 	 */
-	public float[][] make_matrice(final T[] da, final T[] db)
+	default public float[][] makeMatrix(final T[] da, final T[] db)
 	{
 		final float[][] d = new float[da.length][db.length];
 		for (int i = 0; i < d.length; i++)
 			for (int j = 0; j < d[i].length; j++)
-				d[i][j] = max_num;
-		d[0][0] = initial_cost;
+				d[i][j] = MAX_NUM;
+		d[0][0] = INITIAL_COST;
 		return d;
 	}
 
 	/**
 	 * Calcule de la distance d'edition entre deux tableau de T. Utilisation de
 	 * l'algorithme DTW.
+	 * 
+	 * @return the distance between the two word
 	 */
-	public float dtw(final T[] da, final T[] db)
+	default public float dtw(final T[] da, final T[] db)
 	{
-		paths = make_matrice(da, db);
+		setPaths(makeMatrix(da, db));
 		for (int i = 0; i < da.length; i++)
 			for (int j = 0; j < db.length; j++)
-				paths[i][j] = this.distance(da[i], db[j]);
+				getPaths()[i][j] = this.distance(da[i], db[j]);
 		for (int i = 0; i < da.length; i++)
 			for (int j = 0; j < db.length; j++)
-				paths[i][j] += this.direction(i, j);
-		return paths[da.length - 1][db.length - 1];
+				getPaths()[i][j] += this.direction(i, j);
+		return getPaths()[da.length - 1][db.length - 1];
 	}
 
 	/**
@@ -118,13 +112,13 @@ abstract class De<T/* implements Comparable */>
 	 * de la case passee en parametres. Le dernier parametres est le poid de
 	 * cette case la moins chere.
 	 */
-	private Coeffs get_min(final Coeffs start)
+	default Coeffs getMin(final Coeffs start)
 	{
 		Coeffs min = start;
-		for (final Coeffs n : coeffs)
+		for (final Coeffs n : getCoeffs())
 			if (start.second - n.second >= 0 && start.third - n.third >= 0)
 			{
-				final float cost = paths[start.second - n.second][start.third - n.third];
+				final float cost = getPaths()[start.second - n.second][start.third - n.third];
 				if (cost <= min.first)
 					min = new Coeffs(cost, start.second - n.second, start.third - n.third);
 			}
@@ -135,20 +129,20 @@ abstract class De<T/* implements Comparable */>
 	 * Reconstruit le chemin depuis le calcule de distance. Le chainage arriere
 	 * commence par l'element retourne par dtw.
 	 */
-	public List<Coeffs> backtrack()
+	default public List<Coeffs> backtrack()
 	{
-		if (paths == null)
+		if (getPaths() == null)
 			return null;
-		final int i = paths.length - 1;
-		final int j = paths[i].length - 1;
-		final List<Coeffs> l = new LinkedList<>();
-		Coeffs node = new Coeffs(paths[i][j], i, j);
+		final int i = getPaths().length - 1;
+		final int j = getPaths()[i].length - 1;
+		final List<Coeffs> l = new ArrayList<>(3);
+		Coeffs node = new Coeffs(getPaths()[i][j], i, j);
 		l.add(node);
 		boolean stop = false;
 		while (!stop)
 		{
 			final Coeffs last = node;
-			node = get_min(node);
+			node = getMin(node);
 			if (!(stop = (node.second == last.second && node.third == last.third)))
 				l.add(node);
 		}
@@ -160,7 +154,7 @@ abstract class De<T/* implements Comparable */>
 	 * Fait tourner le DTW puis le backtrack. Le cout est disponible dans le
 	 * first du dernier element de la liste.
 	 */
-	public List<Coeffs> run(final T[] da, final T[] db)
+	default public List<Coeffs> run(final T[] da, final T[] db)
 	{
 		dtw(da, db);
 		return backtrack();
@@ -173,34 +167,35 @@ abstract class De<T/* implements Comparable */>
 	public enum Action
 	{
 		SUPRESSION, ADDITION, SUBSTITUTION, CONSERVATION
-	};
+	}
 
 	/**
 	 * Cree une encapsulation pour les actions de SUBSTITUTION ou CONSERVATION.
 	 * Note que la conservation est decider pour une distance de 0.
 	 */
-	private Couple<Couple<Action, Float>, Couple<T, T>> build_action_simple(final T a, final T b, final float c)
-			{
+	default Pair<Pair<Action, Float>, Pair<T, T>> buildActionSimple(final T a, final T b, final float c)
+	{
 		final Action ac = (0.0 == distance(a, b)) ? Action.CONSERVATION : Action.SUBSTITUTION;
-		return new Couple<>(new Couple<>(ac, c), new Couple<>(a, b));
-			}
+		return new Pair<>(new Pair<>(ac, c), new Pair<>(a, b));
+	}
 
 	/**
 	 * Annote la chaine d'edition.
 	 */
-	public List<Couple<Couple<Action, Float>, Couple<T, T>>> annote(final List<Coeffs> chemin, final T[] a, final T[] b)
-			{
-		final List<Couple<Couple<Action, Float>, Couple<T, T>>> resultat = new ArrayList<>(chemin.size());
+	default public List<Pair<Pair<Action, Float>, Pair<T, T>>> annote(final List<Coeffs> chemin, final T[] a, final T[] b)
+	{
+		final List<Pair<Pair<Action, Float>, Pair<T, T>>> resultat = new ArrayList<>(chemin.size());
 		Coeffs pred = null;
 		for (final Coeffs t : chemin)
 		{
-			final Couple<Couple<Action, Float>, Couple<T, T>> ac = build_action_simple(a[t.second], b[t.third], t.first);
+			final Pair<Pair<Action, Float>, Pair<T, T>> ac = buildActionSimple(a[t.second], b[t.third], t.first);
 			if (pred != null)
 			{
 				final int x = t.second.compareTo(pred.second);
 				final int y = t.third.compareTo(pred.third);
 				if (x > 0 && y > 0)
 				{
+					//
 				}
 				else
 					if (x > 0 && y == 0)
@@ -222,6 +217,6 @@ abstract class De<T/* implements Comparable */>
 			pred = t;
 		}
 		return resultat;
-			}
+	}
 
 }

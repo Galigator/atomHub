@@ -326,6 +326,9 @@ public class Atom extends Common
 					_logger.error("Save recette format error.");
 				break;
 			}
+			default:
+				_logger.error("Unkown field case in switch : " + field);
+				break;
 		}
 
 		if (_logger.isDebugEnabled())

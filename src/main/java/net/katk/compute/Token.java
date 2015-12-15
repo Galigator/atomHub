@@ -3,24 +3,21 @@ package net.katk.compute;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
-
 import net.katk.adapter.Problem;
 import net.katk.model.Atom;
 import net.katk.model.Branch;
 import net.katk.model.Example;
-import net.katk.model.Party;
 import net.katk.model.Param;
+import net.katk.model.Party;
 import net.katk.model.People;
 import net.katk.model.Reactor;
 import net.katk.model.Step;
 import net.katk.tools.StackTraceInfo;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,25 +25,25 @@ public class Token
 {
 	private transient static final Logger _logger = LoggerFactory.getLogger(Token.class.getName());
 	protected final EntityManagerFactory _factory = Persistence.createEntityManagerFactory(null);
-	
+
 	public EntityManager _em;
 	public String _token;
 	public People _people;
-	
+
 	private String getIdOfToken(final String token)
 	{
 		try
 		{
-			if (token != null)
+			if (token != null && _token != null)
 				return token;
 		}
-		catch(final Exception e)
+		catch (final Exception e)
 		{
 			_logger.error("No Id found in token : " + token);
 		}
 		return null;
 	}
-	
+
 	protected boolean open() throws Problem
 	{
 		if (_logger.isDebugEnabled())
@@ -56,14 +53,14 @@ public class Token
 			_em = _factory.createEntityManager();
 			_em.getTransaction().begin();
 		}
-		catch(final Exception e)
+		catch (final Exception e)
 		{
 			_logger.error("@Opening DB session.", e);
 			throw new Problem(e.getMessage());
 		}
 		return true;
 	}
-	
+
 	protected boolean open(final String token) throws Problem
 	{
 		if (_logger.isDebugEnabled())
@@ -74,7 +71,7 @@ public class Token
 			_em = _factory.createEntityManager();
 			_em.getTransaction().begin();
 		}
-		catch(final Exception e)
+		catch (final Exception e)
 		{
 			_logger.error("@Opening DB session.", e);
 			throw new Problem(e.getMessage());
@@ -86,7 +83,7 @@ public class Token
 			close();
 			throw new Problem(token + " isn't allow");
 		}
-		
+
 		final Optional<People> people = getPeople(id);
 		if (people.isPresent())
 		{
@@ -117,19 +114,19 @@ public class Token
 	}
 
 	// Identification service.
-	
+
 	public People getPeople()
 	{
 		return null; // Search the people from token.
 	}
-	
+
 	public Party getGroup()
 	{
 		return null; // Search the group from token.
 	}
-	
+
 	// Gets Services
-	
+
 	public Optional<Atom> getAtom(final String id)
 	{
 		return Optional.ofNullable(_em.find(Atom.class, id));
@@ -138,7 +135,7 @@ public class Token
 	public List<Atom> getAtoms(final List<String> ids)
 	{
 		final List<Atom> atoms = new ArrayList<>();
-		for(final String id : ids)
+		for (final String id : ids)
 		{
 			final Atom atom = _em.find(Atom.class, id);
 			if (atom != null)
@@ -147,7 +144,7 @@ public class Token
 		_em.close();
 		return atoms;
 	}
-	
+
 	public Optional<Example> getExample(final String id)
 	{
 		return Optional.ofNullable(_em.find(Example.class, id));
@@ -167,33 +164,33 @@ public class Token
 	{
 		return Optional.ofNullable(_em.find(People.class, id));
 	}
-	
+
 	public Optional<Party> getGroup(final String id)
 	{
 		return Optional.ofNullable(_em.find(Party.class, id));
 	}
-	
+
 	public Optional<Step> getStep(final String id)
 	{
 		return Optional.ofNullable(_em.find(Step.class, id));
 	}
-	
+
 	public Optional<Param> getParam(final String id)
 	{
 		return Optional.ofNullable(_em.find(Param.class, id));
 	}
-	
+
 	public Optional<Atom> getAtomByName(final String name)
 	{
 		// FIXME : Only the people with the good authorization should be allow to execute this procedure.
 		final String str = name.replace("\'", "").replace("(", "").replace(")", "").replace(";", "").replace("/", "").replace("--", "").replace("\"", "");
-		
+
 		// Object arg1; _em.find(Atom.class, arg1);
-		final Query query = _em.createNativeQuery("select id from atom where name=\'"+str+"\'");
-		
-	 	@SuppressWarnings("unchecked")
+		final Query query = _em.createNativeQuery("select id from atom where name=\'" + str + "\'");
+
+		@SuppressWarnings("unchecked")
 		final List<String> list = query.getResultList();
 
-		return (list.size() != 1) ? Optional.empty() : getAtom(list.get(0)); 
+		return (list.size() != 1) ? Optional.empty() : getAtom(list.get(0));
 	}
 }

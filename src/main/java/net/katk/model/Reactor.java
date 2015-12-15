@@ -11,12 +11,11 @@ import net.katk.adapter.Reaction;
 import net.katk.compute.Token;
 
 /**
- * 
  * Reasoning is done by class
- *
  */
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+// TODO find a way to disable the JPA warning. OpenJPA fully support this behavior.
 public abstract class Reactor extends Common
 {
 	@XmlElement
