@@ -7,29 +7,78 @@ import java.util.List;
 /**
  * Algorithme de la distance d'edition pour les strings.
  */
-public class DistanceDEdition extends De<Character>
+public class EditionDistance implements DTW<Character>
 {
+	/**
+	 * Chaque triplet contient dans l'ordre . : first : Le coefficiants de
+	 * ponderation. second : La progression en X third : La progression en Y
+	 */
+	private volatile Collection<Coeffs> _coeffs;
+
+	/**
+	 * Le poids de tous les elements de chemins
+	 */
+	protected volatile float[][] _paths;
+
+	@Override
+	public Collection<Coeffs> getCoeffs()
+	{
+		return _coeffs;
+	}
+
+	@Override
+	public void setCoeffs(final Collection<Coeffs> coeffs)
+	{
+		_coeffs = coeffs;
+	}
+
+	@Override
+	public float[][] getPaths()
+	{
+		return _paths;
+	}
+
+	@Override
+	public void setPaths(final float[][] paths)
+	{
+		_paths = paths;
+	}
 
 	/**
 	 * Constructeur avec progression par default. De base, l'ajout ou la
 	 * supression d'une lettre coute deux fois plus que l'operation normal.
 	 */
-	public DistanceDEdition()
+	public EditionDistance()
 	{
+		autoInit();
 	}
 
 	/**
 	 * Constructeur avec initialisation des parametres de progression.
 	 */
-	public DistanceDEdition(final Collection<Coeffs> c)
+	public EditionDistance(final Collection<Coeffs> c)
 	{
-		super(c);
+		init(c);
 	}
 
 	/**
 	 * Parametres pour la distance entre deux caracteres.
 	 */
-	public static final String[] tab = { "aàâä@", "eéèêë€", "iîï", "uûüµ", "oôö", "yŷÿ", "cç©", " _-\t\n\r", "0123456787", "({[", ")}]", "+/-*", "£$ø", "\"'" };
+	public static final String[] tab = { //
+	/*	  */"aàâä@", //
+			"eéèêë€", //
+			"iîï", //
+			"uûüµ", //
+			"oôö", //
+			"yŷÿ", //
+			"cç©", //
+			" _-\t\n\r", //
+			"0123456787",  //
+			"({[", //
+			")}]", //
+			"+/-*", //
+			"£$ø", //
+			"\"'" };
 
 	/**
 	 * Vrai si la String contient le caractere passe en parametres.
@@ -91,8 +140,7 @@ public class DistanceDEdition extends De<Character>
 	/**
 	 * Affiche un chemin de substitution.
 	 */
-	@SuppressWarnings("unused")
-	private void print_sub(final List<Coeffs> chemin)
+	void print_sub(final List<Coeffs> chemin)
 	{
 		for (final Coeffs t : chemin)
 			System.out.println(" i = " + t.second + " : j = " + t.third + " : Cost = " + t.first);
@@ -109,42 +157,24 @@ public class DistanceDEdition extends De<Character>
 	}
 
 	/**
-	 * Les modifications possible que l'on deduis depuis le chemin de la
-	 * distance d'edition.
-	 */
-	public enum Action
-	{
-		SUPRESSION, ADDITION, SUBSTITUTION, CONSERVATION
-	};
-
-	/**
-	 * Cree une encapsulation pour les actions de SUBSTITUTION ou CONSERVATION.
-	 */
-
-	private Couple<Couple<Action, Float>, Couple<Character, Character>> build_action_simple(final char a, final char b, final float c)
-			{
-		final Action ac = (a == b) ? Action.CONSERVATION : Action.SUBSTITUTION;
-		return new Couple<>(new Couple<>(ac, c), new Couple<>(new Character(a), new Character(b)));
-			}
-
-	/**
 	 * Annote la chaine d'edition.
 	 */
-	public List<Couple<Couple<Action, Float>, Couple<Character, Character>>> annote(final List<Coeffs> chemin, final String a, final String b)
-			{
-		final List<Couple<Couple<Action, Float>, Couple<Character, Character>>> resultat = new ArrayList<>(chemin.size());
+	public List<Pair<Pair<Action, Float>, Pair<Character, Character>>> annote(final List<Coeffs> chemin, final String a, final String b)
+	{
+		final List<Pair<Pair<Action, Float>, Pair<Character, Character>>> resultat = new ArrayList<>(chemin.size());
 		final char[] str_a = a.toCharArray();
 		final char[] str_b = b.toCharArray();
 		Coeffs pred = null;
 		for (final Coeffs t : chemin)
 		{
-			final Couple<Couple<Action, Float>, Couple<Character, Character>> ac = build_action_simple(str_a[t.second], str_b[t.third], t.first);
+			final Pair<Pair<Action, Float>, Pair<Character, Character>> ac = buildActionSimple(str_a[t.second], str_b[t.third], t.first);
 			if (pred != null)
 			{
 				final int x = t.second.compareTo(pred.second);
 				final int y = t.third.compareTo(pred.third);
 				if (x > 0 && y > 0)
 				{
+					//
 				}
 				else
 					if (x > 0 && y == 0)
@@ -166,14 +196,14 @@ public class DistanceDEdition extends De<Character>
 			pred = t;
 		}
 		return resultat;
-			}
+	}
 
 	/**
 	 * Affiche un chemin annote.
 	 */
-	protected void print(final List<Couple<Couple<Action, Float>, Couple<Character, Character>>> l)
+	protected void print(final List<Pair<Pair<Action, Float>, Pair<Character, Character>>> l)
 	{
-		for (final Couple<Couple<Action, Float>, Couple<Character, Character>> m : l)
+		for (final Pair<Pair<Action, Float>, Pair<Character, Character>> m : l)
 			System.out.println(m.first.first.toString() + " : " + m.first.second.toString() + " : " + m.second.first + " : " + m.second.second);
 	}
 
@@ -181,7 +211,7 @@ public class DistanceDEdition extends De<Character>
 	 * Fonction de tests. Ne pas utiliser cette fonction sans les conseils de
 	 * votre medecin.
 	 */
-	public static void main(String[] argv)
+	public static void main(final String[] argv)
 	{
 
 		final Collection<Coeffs> coeffs = new ArrayList<>();
@@ -189,17 +219,17 @@ public class DistanceDEdition extends De<Character>
 		for (final Coeffs t : ta)
 			coeffs.add(t);
 
-		final DistanceDEdition d = new DistanceDEdition(coeffs);
-		final List<Couple<String, String>> l = new ArrayList<>(3);
-		l.add(new Couple<>("Bonjour", "Bonour"));
-		l.add(new Couple<>("Bonjour", "Bonguour"));
-		l.add(new Couple<>("Bonjour", "Aonjour"));
-		l.add(new Couple<>("Bonjour", "Bonjour"));
+		final EditionDistance d = new EditionDistance(coeffs);
+		final List<Pair<String, String>> l = new ArrayList<>(3);
+		l.add(new Pair<>("Bonjour", "Bonour"));
+		l.add(new Pair<>("Bonjour", "Bonguour"));
+		l.add(new Pair<>("Bonjour", "Aonjour"));
+		l.add(new Pair<>("Bonjour", "Bonjour"));
 
-		for (final Couple<String, String> c : l)
+		for (final Pair<String, String> c : l)
 		{
 			final List<Coeffs> chemin = d.run(c.first, c.second);
-			final List<Couple<Couple<Action, Float>, Couple<Character, Character>>> lm = d.annote(chemin, c.first, c.second);
+			final List<Pair<Pair<Action, Float>, Pair<Character, Character>>> lm = d.annote(chemin, c.first, c.second);
 			d.print(lm);
 			System.out.println();
 		}

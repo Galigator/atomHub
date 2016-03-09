@@ -11,14 +11,14 @@ import net.katk.model.Party;
 import net.katk.model.Step;
 import net.katk.tools.Difference;
 import net.katk.tools.nlp.Coeffs;
-import net.katk.tools.nlp.DistanceDEdition;
+import net.katk.tools.nlp.EditionDistance;
 
 public class TreeCompareFunctions
 {
 	private final static Collection<Coeffs> _coeffs = new ArrayList<>();
 	Coeffs[] ta = { new Coeffs((float) 0.9, 1, 0), new Coeffs((float) 1.0, 1, 1), new Coeffs((float) 0.9, 0, 1) };
 
-	private final static DistanceDEdition _d = new DistanceDEdition(_coeffs);
+	private final static EditionDistance _d = new EditionDistance(_coeffs);
 
 	final static int _smallDateDifference = 500000;
 

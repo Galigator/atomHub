@@ -1,6 +1,6 @@
 package net.katk.tools.nlp;
 
-class Triplet<T, U, V>
+class Triple<T, U, V>
 {
 
 	protected T first;
@@ -11,7 +11,7 @@ class Triplet<T, U, V>
 	 * Construction d'un triplet depuis un tableau de String.
 	 */
 	@SuppressWarnings("unchecked")
-	public Triplet(final String[] tableau)
+	public Triple(final Object[] tableau)
 	{
 		if (3 == tableau.length)
 		{
@@ -26,7 +26,7 @@ class Triplet<T, U, V>
 	/**
 	 * Construction d'un triplet depuis 3 valeurs.
 	 */
-	public Triplet(T a, U b, V c)
+	public Triple(final T a, final U b, final V c)
 	{
 		first = a;
 		second = b;
