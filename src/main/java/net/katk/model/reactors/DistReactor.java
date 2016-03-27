@@ -1,11 +1,8 @@
 package net.katk.model.reactors;
 
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlElement;
 import net.katk.adapter.Reaction;
 import net.katk.compute.Token;
@@ -46,23 +43,12 @@ public class DistReactor extends Reactor
 		_insertion = insertion;
 	}
 
-	@XmlElement
-	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-	@Column(name = "atom")
-	private Atom _atom = null;
-
-	public Atom getAtom()
-	{
-		return _atom;
-	}
-
 	public DistReactor()
 	{
 	}
 
-	public DistReactor(final Token token, final Atom atom)
+	public DistReactor(final Token token)
 	{
-		_atom = atom;
 		token._em.persist(this);
 	}
 

@@ -2,7 +2,6 @@ package net.katk.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +12,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
-
 import net.katk.compute.Token;
 import net.katk.model.reactors.DistReactor;
 import net.katk.model.reactors.PlanReactor;
@@ -23,13 +21,13 @@ import net.katk.model.reactors.tree.TreeReactor;
 /**
  * An example is a model of realization in the job world.
  */
-@Entity(name="example")
+@Entity(name = "example")
 public class Example extends Common
 {
 	@XmlIDREF
-	@ManyToOne(cascade=CascadeType.PERSIST,fetch=FetchType.LAZY)
-	@Column(name="origine")
-	private Atom _origine = null;
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+	@Column(name = "origine")
+	private volatile Atom _origine = null;
 
 	public Atom getOrigine()
 	{
@@ -40,7 +38,7 @@ public class Example extends Common
 	@OneToMany
 	@OrderColumn(name = "index")
 	// @OrderBy("index")
-	private List<Step> _path = new ArrayList<>();
+	private volatile List<Step> _path = new ArrayList<>();
 
 	public List<Step> getPath()
 	{
@@ -48,8 +46,8 @@ public class Example extends Common
 	}
 
 	@XmlElement
-	@Column(name="state")
-	private int _state = 0; // 0 - 4
+	@Column(name = "state")
+	private volatile int _state = 0; // 0 - 4
 
 	public int getState()
 	{
@@ -62,8 +60,8 @@ public class Example extends Common
 	}
 
 	@XmlElement
-	@Column(name="nominal")
-	private boolean _nominal = false;
+	@Column(name = "nominal")
+	private volatile boolean _nominal = false;
 
 	public boolean getNominal()
 	{
@@ -76,8 +74,8 @@ public class Example extends Common
 	}
 
 	@XmlElement
-	@Column(name="obselete")
-	private boolean _obselete = false;
+	@Column(name = "obselete")
+	private volatile boolean _obselete = false;
 
 	public boolean getObselete()
 	{
@@ -91,8 +89,8 @@ public class Example extends Common
 
 	@XmlElement
 	@Lob
-	@Column(name="externalResourceType")
-	private String _externalResourceType = null; // ex : "RTMS"
+	@Column(name = "externalResourceType")
+	private volatile String _externalResourceType = null; // ex : "RTMS"
 
 	public String getExternalResourceType()
 	{
@@ -107,7 +105,7 @@ public class Example extends Common
 
 	@XmlElement
 	@Lob
-	@Column(name="externalResourceId")
+	@Column(name = "externalResourceId")
 	private String _externalResourceId = null; // ex : n of RTMS ticket.
 
 	public String getExternalResourceId()
@@ -120,19 +118,22 @@ public class Example extends Common
 		_externalResourceId = externalResourceId;
 		token._em.merge(this);
 	}
-	
+
 	// @XmlElement // We don't want the user to know this.
 	@OneToMany
 	@OrderColumn(name = "index_reactor")
 	@XmlIDREF
-	private List<Reactor> _reactors = new ArrayList<>(2);
+	private volatile List<Reactor> _reactors = new ArrayList<>(2);
 
 	public List<Reactor> getReactors()
 	{
 		return _reactors;
 	}
-	
-	public Example(){}
+
+	public Example()
+	{
+	}
+
 	public Example(final Token token, final Atom atom)
 	{
 		assert token != null;
@@ -140,18 +141,27 @@ public class Example extends Common
 		_origine = atom;
 
 		setGroup(token.getGroup()); // TODO set the Party.
-	
-		_reactors.add(new TreeReactor(token,atom));
-		_reactors.add(new DistReactor(token,atom));
-		_reactors.add(new StatReactor(token,atom));
-		_reactors.add(new PlanReactor(token,atom));
+
+		_reactors.add(new TreeReactor(token));
+		_reactors.add(new DistReactor(token));
+		_reactors.add(new StatReactor(token));
+		_reactors.add(new PlanReactor(token));
 
 		token._em.persist(this);
 	}
-	
+
 	public void addStep(final Token token, final Step step)
 	{
 		getPath().add(step);
 		token._em.persist(this);
+	}
+
+	public void removeStep(final Token token)
+	{
+		if (!getPath().isEmpty())
+		{
+			getPath().remove(getPath().size() - 1);
+			token._em.persist(this);
+		}
 	}
 }

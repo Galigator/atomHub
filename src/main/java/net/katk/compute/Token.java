@@ -21,7 +21,7 @@ import net.katk.tools.StackTraceInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Token
+public class Token implements AutoCloseable
 {
 	private transient static final Logger _logger = LoggerFactory.getLogger(Token.class.getName());
 	protected final EntityManagerFactory _factory = Persistence.createEntityManagerFactory(null);
@@ -34,7 +34,7 @@ public class Token
 	{
 		try
 		{
-			if (token != null && _token != null)
+			if (token != null && _token != null) //FIXME TODO Convert the cookie into id of people.
 				return token;
 		}
 		catch (final Exception e)
@@ -42,6 +42,18 @@ public class Token
 			_logger.error("No Id found in token : " + token);
 		}
 		return null;
+	}
+
+	private Optional<People> getPeopleOfToken(final String token) throws Problem
+	{
+		final String id = getIdOfToken(token);
+		if (id == null)
+		{
+			close();
+			throw new Problem(token + " isn't allow");
+		}
+
+		return getPeople(id);
 	}
 
 	protected boolean open() throws Problem
@@ -77,14 +89,7 @@ public class Token
 			throw new Problem(e.getMessage());
 		}
 
-		final String id = getIdOfToken(token);
-		if (id == null)
-		{
-			close();
-			throw new Problem(token + " isn't allow");
-		}
-
-		final Optional<People> people = getPeople(id);
+		final Optional<People> people = getPeopleOfToken(token);
 		if (people.isPresent())
 		{
 			_people = people.get();
@@ -97,7 +102,8 @@ public class Token
 		}
 	}
 
-	protected void close() throws Problem
+	@Override
+	public void close() throws Problem
 	{
 		if (_logger.isDebugEnabled())
 			_logger.debug(StackTraceInfo.getCurrentMethodName());
@@ -117,12 +123,12 @@ public class Token
 
 	public People getPeople()
 	{
-		return null; // Search the people from token.
+		return _people;
 	}
 
 	public Party getGroup()
 	{
-		return null; // Search the group from token.
+		return _people.getGroup();
 	}
 
 	// Gets Services
