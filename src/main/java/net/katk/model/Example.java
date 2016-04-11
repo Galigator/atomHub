@@ -13,10 +13,6 @@ import javax.persistence.OrderColumn;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import net.katk.compute.Token;
-import net.katk.model.reactors.DistReactor;
-import net.katk.model.reactors.PlanReactor;
-import net.katk.model.reactors.StatReactor;
-import net.katk.model.reactors.tree.TreeReactor;
 
 /**
  * An example is a model of realization in the job world.
@@ -119,17 +115,6 @@ public class Example extends Common
 		token._em.merge(this);
 	}
 
-	// @XmlElement // We don't want the user to know this.
-	@OneToMany
-	@OrderColumn(name = "index_reactor")
-	@XmlIDREF
-	private volatile List<Reactor> _reactors = new ArrayList<>(2);
-
-	public List<Reactor> getReactors()
-	{
-		return _reactors;
-	}
-
 	public Example()
 	{
 	}
@@ -141,12 +126,6 @@ public class Example extends Common
 		_origine = atom;
 
 		setGroup(token.getGroup()); // TODO set the Party.
-
-		_reactors.add(new TreeReactor(token));
-		_reactors.add(new DistReactor(token));
-		_reactors.add(new StatReactor(token));
-		_reactors.add(new PlanReactor(token));
-
 		token._em.persist(this);
 	}
 

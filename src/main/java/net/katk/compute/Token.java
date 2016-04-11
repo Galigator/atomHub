@@ -1,8 +1,11 @@
 package net.katk.compute;
 
+import static net.katk.tools.StackTraceInfo.getCurrentMethodName;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -17,13 +20,12 @@ import net.katk.model.Party;
 import net.katk.model.People;
 import net.katk.model.Reactor;
 import net.katk.model.Step;
+import net.katk.tools.Log;
 import net.katk.tools.StackTraceInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Token implements AutoCloseable
 {
-	private transient static final Logger _logger = LoggerFactory.getLogger(Token.class.getName());
+	private transient static final Logger _logger = Log.getLogger(Token.class.getName());
 	protected final EntityManagerFactory _factory = Persistence.createEntityManagerFactory(null);
 
 	public EntityManager _em;
@@ -39,7 +41,7 @@ public class Token implements AutoCloseable
 		}
 		catch (final Exception e)
 		{
-			_logger.error("No Id found in token : " + token);
+			_logger.severe(() -> "No Id found in token : " + token);
 		}
 		return null;
 	}
@@ -58,8 +60,7 @@ public class Token implements AutoCloseable
 
 	protected boolean open() throws Problem
 	{
-		if (_logger.isDebugEnabled())
-			_logger.debug(StackTraceInfo.getCurrentMethodName());
+		_logger.fine(() -> StackTraceInfo.getCurrentMethodName());
 		try
 		{
 			_em = _factory.createEntityManager();
@@ -67,7 +68,7 @@ public class Token implements AutoCloseable
 		}
 		catch (final Exception e)
 		{
-			_logger.error("@Opening DB session.", e);
+			Log.error(_logger, "@Opening DB session.", e);
 			throw new Problem(e.getMessage());
 		}
 		return true;
@@ -75,8 +76,7 @@ public class Token implements AutoCloseable
 
 	protected boolean open(final String token) throws Problem
 	{
-		if (_logger.isDebugEnabled())
-			_logger.debug(StackTraceInfo.getCurrentMethodName());
+		_logger.fine(() -> StackTraceInfo.getCurrentMethodName());
 		_token = token;
 		try
 		{
@@ -85,7 +85,7 @@ public class Token implements AutoCloseable
 		}
 		catch (final Exception e)
 		{
-			_logger.error("@Opening DB session.", e);
+			Log.error(_logger, "@Opening DB session.", e);
 			throw new Problem(e.getMessage());
 		}
 
@@ -105,9 +105,7 @@ public class Token implements AutoCloseable
 	@Override
 	public void close() throws Problem
 	{
-		if (_logger.isDebugEnabled())
-			_logger.debug(StackTraceInfo.getCurrentMethodName());
-
+		_logger.fine(() -> getCurrentMethodName());
 		if (_em == null)
 			throw new Problem("The entity manager is null.");
 

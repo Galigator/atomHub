@@ -15,8 +15,6 @@ import javax.persistence.OrderColumn;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import net.katk.compute.Token;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * An atom is a part knowledge that can't be cut without resulting in a loose of
@@ -25,8 +23,6 @@ import org.slf4j.LoggerFactory;
 @Entity(name = "atom")
 public class Atom extends Common
 {
-	private transient static final Logger _logger = LoggerFactory.getLogger(Atom.class.getName());
-
 	@XmlElement
 	@Lob
 	@Column(name = "name")
@@ -229,8 +225,7 @@ public class Atom extends Common
 
 	private void save(final Token token, final String name, final String description, final String resume, final String verbe, final String object, final String branchId, final String directory, final String eventQueue, final String recetteId)
 	{
-		if (_logger.isTraceEnabled())
-			_logger.trace("Token:" + token + "\tsave all");
+		_logger.fine(() -> "Token: " + token + "\tsave all");
 
 		_name = name;
 		_verbe = verbe;
@@ -254,16 +249,14 @@ public class Atom extends Common
 				_recette = exampleOption.get();
 		}
 
-		if (_logger.isDebugEnabled())
-			_logger.debug("persisting : " + this);
+		_logger.fine(() -> "persisting : " + this);
 
 		token._em.persist(this);
 	}
 
 	private void save(final Token token, final Field field, final Object value)
 	{
-		if (_logger.isTraceEnabled())
-			_logger.trace("Token:" + token + "\tField:" + field + "\tObject:" + value);
+		_logger.fine(() -> "Token:" + token + "\tField:" + field + "\tObject:" + value);
 
 		switch (field)
 		{
@@ -311,7 +304,7 @@ public class Atom extends Common
 						_branch = branchOption.get();
 				}
 				else
-					_logger.error("Save recette format error.");
+					_logger.severe("Save recette format error.");
 				break;
 			}
 			case Recette:
@@ -323,16 +316,15 @@ public class Atom extends Common
 						_recette = exampleOption.get();
 				}
 				else
-					_logger.error("Save recette format error.");
+					_logger.severe("Save recette format error.");
 				break;
 			}
 			default:
-				_logger.error("Unkown field case in switch : " + field);
+				_logger.severe("Unkown field case in switch : " + field);
 				break;
 		}
 
-		if (_logger.isDebugEnabled())
-			_logger.debug("persisting : " + this);
+		_logger.fine(() -> "persisting : " + this);
 
 		token._em.persist(this);
 	}

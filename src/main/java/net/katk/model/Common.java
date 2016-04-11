@@ -1,5 +1,6 @@
 package net.katk.model;
 
+import java.util.logging.Logger;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -8,6 +9,7 @@ import javax.persistence.OneToOne;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
+import net.katk.tools.Log;
 
 /**
  * Commons are fields shared by all objects of this model.
@@ -15,6 +17,8 @@ import javax.xml.bind.annotation.XmlIDREF;
 @MappedSuperclass
 public abstract class Common implements Comparable<Common>
 {
+	protected transient static final Logger _logger = Log.getLogger(Common.class.getName());
+
 	@XmlElement
 	@XmlID
 	@Id

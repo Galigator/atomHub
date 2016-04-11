@@ -1,14 +1,8 @@
-package net.katk.model.reactors.tree;
+package net.katk.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import net.katk.model.Atom;
-import net.katk.model.Common;
-import net.katk.model.Example;
-import net.katk.model.Param;
-import net.katk.model.Party;
-import net.katk.model.Step;
 import net.katk.tools.Difference;
 import net.katk.tools.nlp.Coeffs;
 import net.katk.tools.nlp.EditionDistance;

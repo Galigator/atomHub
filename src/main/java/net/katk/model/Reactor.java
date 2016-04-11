@@ -1,49 +1,131 @@
 package net.katk.model;
 
+import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Lob;
-import javax.xml.bind.annotation.XmlElement;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import net.katk.adapter.Reaction;
 import net.katk.compute.Token;
+import net.katk.tools.Log;
 
 /**
- * Reasoning is done by class
+ * Reasoning by tree recomposition.
  */
-@Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-// TODO find a way to disable the JPA warning. OpenJPA fully support this behavior.
-public abstract class Reactor extends Common
+public interface Reactor
 {
-	@XmlElement
-	@Lob
-	@Column(name = "name")
-	private String _name = null;
+	static final Logger _logger = Log.getLogger(Reactor.class.getName());
 
-	public String getName()
+	default Reaction add(final Token token, final Example example, final List<Param> params, final Atom atom, final String result, final String evaluation, final long date, final String note)
 	{
-		return _name;
+		final Reaction reaction = new Reaction();
+		if (token == null || example == null || atom == null || (result == null && evaluation == null))
+		{
+			reaction._failure = true;
+			reaction._failureMessage = Reactor.class.getCanonicalName() + ".add() invalid input.";
+			return reaction;
+		}
+
+		// Create Step
+		final Step step = new Step(token, params, atom, result, evaluation, date, note, token._people);
+
+		// Add Step
+		example.getPath().add(step);
+		token._em.persist(example);
+
+		// Return this step.
+		reaction._alterExample = example.getId();
+		reaction._alterStep = step.getId();
+
+		// nextStepInTree
+		return reaction;
 	}
 
-	protected void setName(final String name)
+	default Reaction next(final Token token, final Example example, final Reaction reaction)
 	{
-		_name = name;
+		final Reaction out = (reaction == null) ? new Reaction() : reaction;
+
+		// Compare to the tree
+		final List<Example> examples = TreeCompareFunctions.filter(example.getOrigine().getExamples(), example);
+
+		out._askAtomId = examples.stream().map(Example::getPath).filter(p -> !p.isEmpty()).map(p -> p.get(p.size() - 1).getCore()).map(Atom::getId).map(Integer::parseInt).collect(Collectors.toList());
+
+		// Select the next step in the tree
+		final List<Param> params = new ArrayList<>();
+		final Atom core = example.getOrigine();
+		final String result = "";
+		final String evaluation = "";
+		final long date = System.currentTimeMillis();
+		final String note = "";
+		final People author = token.getPeople();
+		final Step nextStepInTree = new Step(token, params, core, result, evaluation, date, note, author);
+
+		example.addStep(token, nextStepInTree);
+
+		out.setAlterExample(example.getId());
+		out.setAlterStep(nextStepInTree.getId());
+
+		return out;
 	}
 
-	public abstract Reaction add(final Token token, final Example example, final List<Param> params, final Atom atom, final String result, final String evaluation, final long date, final String note);
+	default Reaction next(final Token token, final Example example)
+	{
+		if (token == null || example == null)
+			return new Reaction(getClass(), ".next() invalid input.");
+		return next(token, example, new Reaction());
+	}
 
-	public abstract Reaction addTerminal(final Token token, final Example example);
+	default Reaction back(final Token token, final Example example, final Reaction reaction)
+	{
+		final Reaction out = (reaction == null) ? new Reaction() : reaction;
 
-	public abstract Reaction next(final Token token, final Example example);
+		example.removeStep(token);
+		out.setAlterExample(example.getId());
+		final int lastIndex = example.getPath().size() - 1;
+		if (lastIndex >= 0)
+		{
+			out.setAlterStep(example.getPath().get(lastIndex).getId());
 
-	public abstract Reaction back(final Token token, final Example example);
+		}
+		else
+		{
+			final Atom atom = example.getOrigine();
+			if (atom.getLevel() > 0) // Back while no atom selected and intricate path.
+			{
+				// example.get
+			}
+		}
+		return out;
+	}
 
-	public abstract Reaction insert(final Token token, final Example example, final Step stepA, final Step stepB);
+	default Reaction back(final Token token, final Example example)
+	{
+		if (token == null || example == null)
+			return new Reaction(getClass(), ".back() invalid input.");
 
-	public abstract Reaction remove(final Token token, final Example example, final Step step);
+		return back(token, example, new Reaction());
+	}
 
-	public abstract Reaction replace(final Token token, final Example example, final Step step, final Atom atom, final String result, final String evaluation);
+	default Reaction addTerminal(final Token token, final Example example)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	default Reaction insert(final Token token, final Example example, final Step stepA, final Step stepB)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	default Reaction remove(final Token token, final Example example, final Step step)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	default Reaction replace(final Token token, final Example example, final Step step, final Atom atom, final String result, final String evaluation)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

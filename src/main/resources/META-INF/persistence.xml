@@ -17,12 +17,7 @@
 		<class>net.katk.model.Party</class>
 		<class>net.katk.model.Param</class>
 		<class>net.katk.model.People</class>
-		<class>net.katk.model.Reactor</class>
 		<class>net.katk.model.Step</class>
-		<class>net.katk.model.reactors.DistReactor</class>
-		<class>net.katk.model.reactors.PlanReactor</class>
-		<class>net.katk.model.reactors.StatReactor</class>
-		<class>net.katk.model.reactors.tree.TreeReactor</class>
 		
 	    <properties>
 	    	<!--  <property name="openjpa.MetaDataRepository" value="Preload=true"/>  -->

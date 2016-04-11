@@ -57,4 +57,9 @@ public class Log
 	{
 		logger.log(Level.SEVERE, "", e);
 	}
+
+	public static void error(final Logger logger, final String msg, final Throwable e)
+	{
+		logger.log(Level.SEVERE, msg, e);
+	}
 }

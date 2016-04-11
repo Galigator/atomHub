@@ -4,22 +4,22 @@ import static net.katk.tools.StackTraceInfo.getCurrentMethodName;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 import net.katk.adapter.IAtom;
 import net.katk.adapter.Problem;
 import net.katk.model.Atom;
 import net.katk.model.Atom.Field;
 import net.katk.model.Example;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.katk.tools.Log;
 
 public class AtomServices extends Token implements IAtom
 {
-	private transient static final Logger _logger = LoggerFactory.getLogger(Atom.class.getName());
+	private transient static final Logger _logger = Log.getLogger(AtomServices.class.getName());
 
 	@Override
 	public Atom getAtom(final String token, final String id) throws Problem
 	{
-		_logger.info(getCurrentMethodName());
+		_logger.info(() -> getCurrentMethodName());
 		if (!open(token))
 			return null;
 		try
@@ -35,7 +35,7 @@ public class AtomServices extends Token implements IAtom
 	@Override
 	public List<Atom> getAtoms(final String token, final List<String> ids) throws Problem
 	{
-		_logger.info(getCurrentMethodName());
+		_logger.info(() -> getCurrentMethodName());
 		if (!open(token))
 			return null;
 		try
