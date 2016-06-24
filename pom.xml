@@ -13,7 +13,7 @@
 	
 		<tools.org.apache.openjpa.version>2.4.1</tools.org.apache.openjpa.version>
 		<tools.org.postgresql.version>9.4.1208</tools.org.postgresql.version>
-		<tools.javax.servlet.version>3.1.0</tools.javax.servlet.version>
+		<tools.javax.servlet.version>3.0-alpha-1</tools.javax.servlet.version>
 		<tools.commons-logging.version>1.2</tools.commons-logging.version>
 		<tools.commons-collections.version>3.2.2</tools.commons-collections.version>
 		<tools.commons-beanutils.version>1.9.2</tools.commons-beanutils.version>
