@@ -28,7 +28,7 @@
 		<tools.xml-apis.version>2.0.2</tools.xml-apis.version>
 		<tools.jettison.version>1.3.7</tools.jettison.version>
 		<tools.rs-api.version>2.0.1</tools.rs-api.version>
-		<tools.springframework.version>4.3.0.RELEASE</tools.springframework.version>
+		<tools.springframework.version>4.3.1.RELEASE</tools.springframework.version>
 		<tools.activemq.version>5.7.0</tools.activemq.version>
 		<tools.osgi.version>4.3.0</tools.osgi.version>
 		<tools.dom4j.version>1.6.1</tools.dom4j.version>
