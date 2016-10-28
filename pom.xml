@@ -23,7 +23,7 @@
 		<tools.net.sourceforge.serp.version>1.15.1</tools.net.sourceforge.serp.version>
 		<tools.asm.version>3.3.1</tools.asm.version>
 
-		<tools.cxf.version>3.1.7</tools.cxf.version>
+		<tools.cxf.version>3.1.8</tools.cxf.version>
 		<tools.flexjson.version>2.1</tools.flexjson.version>
 		<tools.xml-apis.version>2.0.2</tools.xml-apis.version>
 		<tools.jettison.version>1.3.8</tools.jettison.version>
