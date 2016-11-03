@@ -50,18 +50,28 @@ public class Runner
 
 		_logger.info("Starting server on " + base);
 
-		Endpoint.publish(base + "/ExampleWS", new net.katk.compute.ExampleServices());
-		startRestServer(base + "/ExampleRS", net.katk.compute.ExampleServices.class);
+		try (net.katk.compute.ExampleServices es = new net.katk.compute.ExampleServices())
+		{
+			try (net.katk.compute.AtomServices as = new net.katk.compute.AtomServices())
+			{
+				Endpoint.publish(base + "/ExampleWS", es);
+				startRestServer(base + "/ExampleRS", net.katk.compute.ExampleServices.class);
 
-		Endpoint.publish(base + "/AtomWS", new net.katk.compute.AtomServices());
-		startRestServer(base + "/AtomRS", net.katk.compute.AtomServices.class);
+				Endpoint.publish(base + "/AtomWS", as);
+				startRestServer(base + "/AtomRS", net.katk.compute.AtomServices.class);
 
-		_logger.info("Server ready");
+				_logger.info("Server ready");
 
-		Thread.sleep(24 * 60 * 60 * 1000);
-		_logger.info("Server exiting");
-		System.exit(0);
-		//http://fusesource.com/docs/framework/2.3/bind_trans/SoapOverJms-PublishWithJava.html
+				Thread.sleep(24 * 60 * 60 * 1000);
+				_logger.info("Server exiting");
+				System.exit(0);
+				//http://fusesource.com/docs/framework/2.3/bind_trans/SoapOverJms-PublishWithJava.html
+			}
+		}
+		catch (final Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/*

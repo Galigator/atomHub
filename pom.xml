@@ -12,11 +12,11 @@
 		<maven-bundle-plugin.version>2.3.7</maven-bundle-plugin.version>
 	
 		<tools.org.apache.openjpa.version>2.4.1</tools.org.apache.openjpa.version>
-		<tools.org.postgresql.version> 9.4.1210</tools.org.postgresql.version>
+		<tools.org.postgresql.version>9.4.1211</tools.org.postgresql.version>
 		<tools.javax.servlet.version>3.0-alpha-1</tools.javax.servlet.version>
 		<tools.commons-logging.version>1.2</tools.commons-logging.version>
 		<tools.commons-collections.version>3.2.2</tools.commons-collections.version>
-		<tools.commons-beanutils.version>1.9.2</tools.commons-beanutils.version>
+		<tools.commons-beanutils.version>1.9.3</tools.commons-beanutils.version>
 		<tools.commons-pool.version>1.6</tools.commons-pool.version>
 		<tools.commons-lang.version>2.6</tools.commons-lang.version>
 		<tools.commons-dbcp.version>1.4</tools.commons-dbcp.version>
@@ -28,7 +28,7 @@
 		<tools.xml-apis.version>2.0.2</tools.xml-apis.version>
 		<tools.jettison.version>1.3.8</tools.jettison.version>
 		<tools.rs-api.version>2.0.1</tools.rs-api.version>
-		<tools.springframework.version>4.3.2.RELEASE</tools.springframework.version>
+		<tools.springframework.version>4.3.3.RELEASE</tools.springframework.version>
 		<tools.activemq.version>5.7.0</tools.activemq.version>
 		<tools.osgi.version>4.3.0</tools.osgi.version>
 		<tools.dom4j.version>1.6.1</tools.dom4j.version>
@@ -262,10 +262,6 @@
 				<version>${tools.org.apache.openjpa.version}</version>
 				<configuration>
 					<includes>net.katk.model/*.class</includes>
-					<includes>net.katk.model/reactors/tree/TreeReactor.class</includes>
-					<includes>net.katk.model/reactors/DistReactor.class</includes>
-					<includes>net.katk.model/reactors/PlanReactor.class</includes>
-					<includes>net.katk.model/reactors/StatReactor.class</includes>
 					<!-- <excludes>**/entities/XML*.class</excludes> -->
 					<addDefaultConstructor>true</addDefaultConstructor>
 					<enforcePropertyRestrictions>true</enforcePropertyRestrictions>
