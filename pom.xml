@@ -36,7 +36,7 @@
 		<tools.org.eclipse.jetty.version>8.1.15.v20140411</tools.org.eclipse.jetty.version>
 		<tools.log4j.version>1.2.27</tools.log4j.version>
 		<tools.org.slf4j.version>1.7.21</tools.org.slf4j.version>
-		<tools.junit.version>4.12</tools.junit.version>
+		<tools.junit.version>4.13.1</tools.junit.version>
 	</properties>
 	
     <repositories>
